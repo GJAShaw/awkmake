@@ -9,18 +9,19 @@
 # ------------------------------------------------------------------------------
 
 build_tacl := ./build.tacl
+rules_mk := ./rules.mk
 variables_mk := ./variables.mk
 
 targets :=
 targets += \
+  $(rules_mk) \
   $(variables_mk)
-
+  
 scripts_dir := ./scripts
+printRules_awk := $(scripts_dir)/printRules.awk
 printVariables_awk := $(scripts_dir)/printVariables.awk
 
-
 RM := rm -fR
-
 
 # ------------------------------------------------------------------------------
 # rules
@@ -29,7 +30,7 @@ RM := rm -fR
 # --------------------------------------
 # all
 # --------------------------------------
-all: $(variables_mk)
+all: $(targets)
 
 # --------------------------------------
 # .ONESHELL
@@ -40,6 +41,13 @@ all: $(variables_mk)
 # .PHONY
 # --------------------------------------
 .PHONY: .ONESHELL all clean
+
+# --------------------------------------
+# rules_mk
+# --------------------------------------
+$(rules_mk): $(build_tacl) $(printRules_awk)
+	@echo "Building $@"
+	@$(printRules_awk) < $(build_tacl) > "$@"
 
 # --------------------------------------
 # variables_mk
