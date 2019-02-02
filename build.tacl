@@ -1,0 +1,64 @@
+== ------------------------------------------------------------------
+== file: build.tacl
+== type: TACL for Guardian software build using GNU Make
+== project: awkmake
+== ------------------------------------------------------------------
+
+== ------------------------------------------------------------------
+== defines and directives
+== ------------------------------------------------------------------
+
+== :add_defines MACRO
+[#DEF :add_defines MACRO |BODY|
+
+  DELETE DEFINE =gs100exe_hello
+  ADD DEFINE    =gs100exe_hello, FILE $STAT.GS100EXE.HELLO
+  DELETE DEFINE =gs100obj_hello
+  add define    =gs100obj_hello, FILE $STAT.GS100OBJ.HELLO
+  DELETE DEFINE =gstalsrc_hello
+  ADD DEFINE    =gstalsrc_hello, FILE $STAT.GSTALSRC.HELLO
+  DELETE DEFINE =tal_out
+  ADD DEFINE    =tal_out, FILE $S.#HELLO.TAL
+  DELETE DEFINE =ocax_out
+  ADD DEFINE    =ocax_out, FILE $S.#HELLO.OCAX
+  DELETE DEFINE =_tal
+  ADD DEFINE    =_tal, FILE $SYSTEM.SYSTEM.TAL
+  DELETE DEFINE =_ocax
+  ADD DEFINE    =_ocax, FILE $SYSTEM.SYSTEM.OCAX
+
+]
+
+== :tal_directives TEXT
+[#DEF :tal_directives TEXT |BODY|OPTIMIZE 0]
+
+
+== ------------------------------------------------------------------
+== gs100obj_hello target
+== ------------------------------------------------------------------
+
+[#DEF :gs100obj_hello_dependencies TEXT |BODY|
+$(gs100obj_hello): $(gstalsrc_hello)
+]
+
+[#DEF :gs100obj_hello_recipe MACRO |BODY|
+  RUN =_tal/IN =gstalsrc_hello, OUT =tal_out, TERM $ZHOME/ &
+    =gs100obj_hello; [:tal_directives]
+]
+
+== ------------------------------------------------------------------
+== gs100exe_hello target
+== ------------------------------------------------------------------
+
+[#DEF :gs100exe_hello_dependencies TEXT |BODY|
+$(gs100exe_hello): $(gs100obj_hello)
+]
+
+[#DEF :gs100exe_hello_recipe MACRO |BODY|
+  RUN =_ocax/OUT =ocax_out, TERM $ZHOME/ =gs100obj_hello &
+    -output_file =gs100exe_hello
+]
+
+== ------------------------------------------------------------------
+== EOF
+== ------------------------------------------------------------------
+
