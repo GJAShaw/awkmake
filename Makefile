@@ -47,14 +47,14 @@ all: $(targets)
 # --------------------------------------
 $(rules_mk): $(build_tacl) $(printRules_awk)
 	@echo "Building $@"
-	@$(printRules_awk) < $(build_tacl) > "$@"
+	@$(printRules_awk) < $(build_tacl) > "$@" 2> /dev/null
 
 # --------------------------------------
 # variables_mk
 # --------------------------------------
 $(variables_mk): $(build_tacl) $(printVariables_awk)
 	@echo "Building $@"
-	@$(printVariables_awk) < $(build_tacl) > "$@"
+	@$(printVariables_awk) < $(build_tacl) > "$@" 2> /dev/null
 
 # --------------------------------------
 # 
