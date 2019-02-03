@@ -13,6 +13,11 @@
 
 BEGIN {
     IGNORECASE = 1 # gawk feature
+    print ""
+    print "# --------------------------------------"
+    print "# variables"
+    print "# --------------------------------------"
+    print ""
 }
 
 function makeVariable(LINE) {
@@ -37,6 +42,8 @@ function makeVariable(LINE) {
 
 # Get ADD DEFINEs for diskfiles only, not spooler locations (hence [^#]+)
 /\sADD\sDEFINE\s[^#]+$/ { print makeVariable($0) }
+
+END { print "" }
 
 # ------------------------------------------------------------------------------
 # EOF
