@@ -38,6 +38,7 @@
 
 [#DEF :gs100obj_hello_dependencies TEXT |BODY|
   $(gs100obj_hello): $(gstalsrc_hello)
+  $(_tal)
 ]
 
 [#DEF :gs100obj_hello_recipe MACRO |BODY|
@@ -51,6 +52,7 @@
 
 [#DEF :gs100exe_hello_dependencies TEXT |BODY|
   $(gs100exe_hello): $(gs100obj_hello)
+  $(_ocax)
 ]
 
 [#DEF :gs100exe_hello_recipe MACRO |BODY|
