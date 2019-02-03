@@ -10,22 +10,36 @@
 
 BEGIN {
     IGNORECASE = 1 # gawk feature
+    print ""
+    print "# --------------------------------------"
+    print "# rules"
+    print "# --------------------------------------"
+    print ""
 }
 
-function makeRule(target_dependencies) {
-    # ****TODO write function. For now, just return argument as-is
-    return "Found: " target_dependencies
+# Search for "[#DEF :label_filename_dependencies TEXT |BODY|"
+/[[][#]DEF[[:space:]]+:?[_[:alpha:]][_[:alnum:]]*_dependencies[[:space:]]+\
+TEXT[[:space:]]+[|]BODY[|]/ {
+    target_label = gensub(/[[][#]DEF[[:space:]]+:?(.+)_dependencies.+/, \
+        "\\1", $0) # gensub is a gawk feature
+    target_dependencies = ""
+    expect_target_dependencies = 1
+    next
 }
 
-
-# Search for "[#DEF :gs100obj_hello_dependencies TEXT |BODY|"
-/[[][#]DEF\s:?[_[:alpha:]][_[:alnum:]]*_dependencies\sTEXT\s[|]BODY[|]/ {
-    expect_target_dependencies = 1; next
-}
-# Next line is the one we want:
+# Extract from subsequent lines till we get a "]", then derive the Make rule
 expect_target_dependencies {
-    print makeRule($0) # ****TODO deal with line continuation in TACL
-    expect_target_dependencies = 0
+    if (! index($0, "]")) {
+        target_dependencies = target_dependencies " " $0
+    } else {
+        sub(/^[[:space:]]+/, "", target_dependencies)
+        match(/^[_[:alnum:]]+/, target_dependencies)
+        target = substr(target_dependencies, RSTART, RLENGTH)
+        print target_dependencies
+        printf("\t%s%s\n", target_label, "_recipe") # ****TODO will need $(call TACL...)
+        print "" # empty line between rules
+        expect_target_dependencies = 0
+    }
 }
 
 # ------------------------------------------------------------------------------
