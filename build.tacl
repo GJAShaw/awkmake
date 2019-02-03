@@ -37,7 +37,7 @@
 == ------------------------------------------------------------------
 
 [#DEF :gs100obj_hello_dependencies TEXT |BODY|
-$(gs100obj_hello): $(gstalsrc_hello)
+  $(gs100obj_hello): $(gstalsrc_hello)
 ]
 
 [#DEF :gs100obj_hello_recipe MACRO |BODY|
@@ -50,7 +50,7 @@ $(gs100obj_hello): $(gstalsrc_hello)
 == ------------------------------------------------------------------
 
 [#DEF :gs100exe_hello_dependencies TEXT |BODY|
-$(gs100exe_hello): $(gs100obj_hello)
+  $(gs100exe_hello): $(gs100obj_hello)
 ]
 
 [#DEF :gs100exe_hello_recipe MACRO |BODY|
