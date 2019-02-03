@@ -4,8 +4,17 @@
 # type: GAWK program
 # project: awkmake
 #
-# This program reads TACL source, looking for
-# yadda yadda yadda more explanation please Greg
+# This program reads TACL source, looking for definitions of TEXT variables
+# called ..._dependencies, then read the contents and creates a GNU Make rule
+# from them. For example, TACL
+#   [#DEF :gs100exe_hello_dependencies TEXT |BODY|
+#     $(x_target): $(y_dependency) $(z_dependency)
+#   ]
+# is printed as GNU Make rule
+#   $(x_target): $(y_dependency) $(z_dependency)
+#   	x_target_recipe
+#
+# The TACL file must define x_target_recipe
 # ------------------------------------------------------------------------------
 
 BEGIN {
