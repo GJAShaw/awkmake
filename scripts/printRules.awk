@@ -42,8 +42,6 @@ expect_target_dependencies {
         target_dependencies = target_dependencies " " $0
     } else {
         sub(/^[[:space:]]+/, "", target_dependencies)
-        match(/^[_[:alnum:]]+/, target_dependencies)
-        target = substr(target_dependencies, RSTART, RLENGTH)
         print target_dependencies
         printf("\t%s%s\n", target_label, "_recipe") # ****TODO will need $(call TACL...)
         print "" # empty line between rules
