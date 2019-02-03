@@ -28,7 +28,7 @@ function makeVariable(LINE) {
 
     # derive filename in OSS format - /G/volume/subvol/file
     file_name_oss = gensub(/\$(.+)\.(.+)\.(.+)/, "/G/\\1/\\2/\\3", "g", \
-        file_name_guardian)
+        file_name_guardian) # gensub() is a gawk feature
 
     # return Make variable definition
     return variable_name " := " file_name_oss
