@@ -40,6 +40,9 @@ function makeVariable(LINE) {
 
 }
 
+# Ignore commented-out lines
+/^[[:space:]]*==/ { next }
+
 # Get ADD DEFINEs for diskfiles only, not spooler locations (hence [^#]+)
 /\sADD\sDEFINE\s[^#]+$/ { print makeVariable($0) }
 

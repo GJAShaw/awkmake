@@ -9,6 +9,11 @@
 == ------------------------------------------------------------------
 
 == :add_defines MACRO
+== Doesn't really need to be a macro; if we're going to OBEY this
+== file, then we could just have the bare commands. The advantage of
+== placing the commands in a macro is that the command to add the
+== defines becomes an explicit one within the build, rather than
+== being hidden among the TACL variable definitions.
 [#DEF :add_defines MACRO |BODY|
 
   DELETE DEFINE =gs100exe_hello
@@ -25,6 +30,8 @@
   ADD DEFINE    =_tal, FILE $SYSTEM.SYSTEM.TAL
   DELETE DEFINE =_ocax
   ADD DEFINE    =_ocax, FILE $SYSTEM.SYSTEM.OCAX
+==  DELETE DEFINE =commented_out
+==  ADD DEFINE    =commented_out, FILE $IT.DOESNT.EXIST
 
 ]
 
@@ -59,6 +66,19 @@
   RUN =_ocax/OUT =ocax_out, TERM $ZHOME/ =gs100obj_hello &
     -output_file =gs100exe_hello
 ]
+
+== ------------------------------------------------------------------
+== commented_out target
+== ------------------------------------------------------------------
+
+==[#DEF :commented_out_dependencies TEXT |BODY|
+==  $(commented_out): $(commented_out_deps)
+==]
+
+==[#DEF :commented_out_recipe MACRO |BODY|
+==  RUN =_ocax/OUT =ocax_out, TERM $ZHOME/ =gs100obj_hello &
+==    -output_file =gs100exe_hello
+==]
 
 == ------------------------------------------------------------------
 == EOF

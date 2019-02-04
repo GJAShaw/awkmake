@@ -26,6 +26,9 @@ BEGIN {
     print ""
 }
 
+# Ignore commented-out lines
+/^[[:space:]]*==/ { next }
+
 # Search for "[#DEF :label_filename_dependencies TEXT |BODY|"
 /[[][#]DEF[[:space:]]+:?[_[:alpha:]][_[:alnum:]]*_dependencies[[:space:]]+\
 TEXT[[:space:]]+[|]BODY[|]/ {
