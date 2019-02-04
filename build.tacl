@@ -57,7 +57,7 @@
 
 [#DEF :gs100exe_hello_recipe MACRO |BODY|
   RUN =_ocax/OUT =ocax_out, TERM $ZHOME/ =gs100obj_hello &
-    -output_file =gs100exe_hello
+    output_file =gs100exe_hello
 ]
 
 == ------------------------------------------------------------------
