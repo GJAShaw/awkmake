@@ -46,7 +46,9 @@ expect_target_dependencies {
     } else {
         sub(/^[[:space:]]+/, "", target_dependencies)
         print target_dependencies
-        printf("\t%s%s\n", target_label, "_recipe") # ****TODO will need $(call TACL...)
+        printf("\t%s\n","@echo \"Building $@...\"")
+        printf("\t%s%s%s\n", "@$(call TACL,$(", target_label,
+            "_recipe)) > /dev/null 2>&-")
         print "" # empty line between rules
         expect_target_dependencies = 0
     }
