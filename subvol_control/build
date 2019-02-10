@@ -5,6 +5,27 @@
 == ------------------------------------------------------------------
 
 == ------------------------------------------------------------------
+== subvol STRUCT
+== ------------------------------------------------------------------
+[#DEF subvol STRUCT;
+  BEGIN
+    STRUCT control;
+      BEGIN
+        CHAR data(0:16) VALUE "$DEV1.GSCTRL"; FILLER 1;
+      END;
+    STRUCT tmp;
+      BEGIN
+        CHAR data(0:16) VALUE "$DEV1.GSTMP"; FILLER 1;
+      END;
+    STRUCT gstalsrc;
+      BEGIN
+        CHAR data(0:16) VALUE "$DEV1.GSTALSRC"; FILLER 1;
+      END;
+  END;
+]
+
+
+== ------------------------------------------------------------------
 == defines and directives
 == ------------------------------------------------------------------
 
