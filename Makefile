@@ -8,9 +8,9 @@
 # variables
 # ------------------------------------------------------------------------------
 
-build_tacl := ./build.tacl
-rules_mk := ./rules.mk
-variables_mk := ./variables.mk
+export build_tacl := ./subvol_control/build
+export rules_mk := ./rules.mk
+export variables_mk := ./variables.mk
 
 targets :=
 targets += \

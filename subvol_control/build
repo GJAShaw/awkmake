@@ -1,5 +1,5 @@
 == ------------------------------------------------------------------
-== file: build.tacl
+== file: build
 == type: TACL for Guardian software build using GNU Make
 == project: awkmake
 == ------------------------------------------------------------------
@@ -16,23 +16,34 @@
 == being hidden among the TACL variable definitions.
 [#DEF :add_defines MACRO |BODY|
 
+  == targets and their build log locations
   DELETE DEFINE =gs100exe_hello
   ADD DEFINE    =gs100exe_hello, FILE $STAT.GS100EXE.HELLO
+  DELETE DEFINE =gs100exe_hello_log
+  ADD DEFINE    =gs100exe_hello_log, FILE $S.#HELLO.OCAX
   DELETE DEFINE =gs100obj_hello
   add define    =gs100obj_hello, FILE $STAT.GS100OBJ.HELLO
+  DELETE DEFINE =gs100obj_hello_log
+  ADD DEFINE    =gs100obj_hello_log, FILE $S.#HELLO.TAL
   DELETE DEFINE =gstalsrc_hello
   ADD DEFINE    =gstalsrc_hello, FILE $STAT.GSTALSRC.HELLO
-  DELETE DEFINE =tal_out
-  ADD DEFINE    =tal_out, FILE $S.#HELLO.TAL
-  DELETE DEFINE =ocax_out
-  ADD DEFINE    =ocax_out, FILE $S.#HELLO.OCAX
+  DELETE DEFINE =gstalsrc_hello_log
+  ADD DEFINE    =gstalsrc_hello_log, FILE $S.#HELLO.CTOEDIT
+
+  == build tools (leading _ in define name is not mandatory)
   DELETE DEFINE =_tal
   ADD DEFINE    =_tal, FILE $SYSTEM.SYSTEM.TAL
   DELETE DEFINE =_ocax
   ADD DEFINE    =_ocax, FILE $SYSTEM.SYSTEM.OCAX
-==  DELETE DEFINE =commented_out
-==  ADD DEFINE    =commented_out, FILE $IT.DOESNT.EXIST
+  DELETE DEFINE =_ctoedit
+  ADD DEFINE    =_ctoedit, FILE $SYSTEM.SYSTEM.CTOEDIT
 
+  == subvolumes to hold intermediate source files with code 180
+  DELETE DEFINE =tacl_tmp_svol
+  ADD DEFINE    =tacl_tmp_svol, FILE $DEV1.GSTCTMP
+  DELETE DEFINE =tal_tmp_svol
+  ADD DEFINE    =tal_tmp_svol, FILE $DEV1.GSTLTMP
+  
 ]
 
 == :tal_directives TEXT
@@ -49,7 +60,7 @@
 ]
 
 [#DEF :gs100obj_hello_recipe MACRO |BODY|
-  RUN =_tal/IN =gstalsrc_hello, OUT =tal_out, TERM $ZHOME/ &
+  RUN =_tal/IN =gstalsrc_hello, OUT =gs100obj_hello_log, TERM $ZHOME/ &
     =gs100obj_hello; [:tal_directives]
 ]
 
@@ -63,7 +74,7 @@
 ]
 
 [#DEF :gs100exe_hello_recipe MACRO |BODY|
-  RUN =_ocax/OUT =ocax_out, TERM $ZHOME/ =gs100obj_hello &
+  RUN =_ocax/OUT =gs100exe_hello_log, TERM $ZHOME/ =gs100obj_hello &
     output_file =gs100exe_hello
 ]
 
