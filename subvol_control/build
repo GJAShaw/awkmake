@@ -5,22 +5,13 @@
 == ------------------------------------------------------------------
 
 == ------------------------------------------------------------------
-== subvol STRUCT
+== subvol_ STRUCT
 == ------------------------------------------------------------------
-[#DEF :subvol STRUCT
+[#DEF :subvol_ STRUCT
   BEGIN
-    STRUCT control;
-      BEGIN
-        CHAR data(0:16) VALUE "$DEV1.GSCTRL"; FILLER 1;
-      END;
-    STRUCT tmp;
-      BEGIN
-        CHAR data(0:16) VALUE "$DEV1.GSTMP"; FILLER 1;
-      END;
-    STRUCT gstalsrc;
-      BEGIN
-        CHAR data(0:16) VALUE "$DEV1.GSTALSRC"; FILLER 1;
-      END;
+    SUBVOL control  VALUE $DEV1.GSCTRL;
+    SUBVOL tmp      VALUE $STAT.GSTMP;
+    SUBVOL gstalsrc VALUE $STAT.GSTALSRC;
   END;
 ]
 
