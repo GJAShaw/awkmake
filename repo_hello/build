@@ -1,0 +1,177 @@
+== ------------------------------------------------------------------
+== file: build
+== type: TACL for Guardian software build using GNU Make
+== project: awkmake
+== ------------------------------------------------------------------
+
+
+?SECTION define_everything MACRO
+== ------------------------------------------------------------------
+== Comments go here
+== ------------------------------------------------------------------
+define_flags
+define_texts
+define_diskfiles
+define_spooler_locations
+define_defines
+define_assigns
+define_params
+define_gs100obj_hello_rule
+define_gs100exe_hello_rule
+
+
+?SECTION define_flags MACRO
+== ------------------------------------------------------------------
+== Comments go here
+== ------------------------------------------------------------------
+[#DEF :flags STRUCT
+  BEGIN
+    BOOL :something_or_other VALUE 0;
+  END;
+]
+
+
+?SECTION define_texts MACRO
+== ------------------------------------------------------------------
+== Comments go here
+== ------------------------------------------------------------------
+[#DEF :tal_directives TEXT |BODY|OPTIMIZE 0,SYMBOLS]
+
+
+?SECTION define_diskfiles MACRO
+== ------------------------------------------------------------------
+== Comments go here
+== ------------------------------------------------------------------
+
+[#DEF :repo STRUCT == repository disk
+  BEGIN
+    STRUCT hello;
+      BEGIN
+        SUBVOL tmp VALUE $DEV1.GSHELTMP;
+        FNAME build    VALUE $DEV1.GSHELLO.BUILD;
+      END;
+    STRUCT gstalsrc;
+      BEGIN
+        SUBVOL tmp VALUE $DEV1.GSTALTMP;
+        FNAME hello    VALUE $DEV1.GSTALSRC.HELLO;
+      END;
+    STRUCT gs100obj;
+      BEGIN
+        == no SUBVOL tmp definition needed
+        FNAME hello    VALUE $DEV1.GS100OBJ.HELLO;
+      END;
+    STRUCT gs100exe;
+      BEGIN
+        == no SUBVOL tmp definition needed
+        FNAME hello    VALUE $DEV1.GS100EXE.HELLO;
+      END;
+  END;
+]
+
+[#DEF :system STRUCT == system disk
+  BEGIN
+    STRUCT system;
+      BEGIN
+        == no SUBVOL tmp definition needed
+        FNAME ctoedit  VALUE $SYSTEM.SYSTEM.CTOEDIT;
+        FNAME extdecs1 VALUE $SYSTEM.SYSTEM.EXTDECS1;
+        FNAME ocax     VALUE $SYSTEM.SYSTEM.OCAX;
+        FNAME tal      VALUE $SYSTEM.SYSTEM.TAL;
+      END;
+    STRUCT zsysdef;
+      BEGIN
+        == no SUBVOL tmp definition needed
+        FNAME zsystal  VALUE $SYSTEM.ZSYSDEF.ZSYSTAL;
+      END;
+  END;
+]
+
+
+?SECTION define_spooler_locations MACRO
+== ------------------------------------------------------------------
+== Comments go here
+== ------------------------------------------------------------------
+
+[#DEF :spooler STRUCT
+  BEGIN
+    STRUCT gstalsrc;
+      BEGIN
+        FNAME hello VALUE $S.#HELLO.CTOEDIT;
+      END;
+    STRUCT gs100obj;
+      BEGIN
+        FNAME hello VALUE $S.#HELLO.TAL;
+      END;
+    STRUCT gs100exe;
+      BEGIN
+        FNAME hello VALUE $S.#HELLO.OCAX;
+      END;
+  END;
+]
+
+
+?SECTION define_defines MACRO
+== ------------------------------------------------------------------
+== Comments go here
+== ------------------------------------------------------------------
+
+DELETE DEFINE =EXTDECS
+ADD DEFINE    =EXTDECS, CLASS MAP, FILE [:system:system:extdecs]
+DELETE DEFINE =ZSYSTAL
+ADD DEFINE    =ZSYSTAL, CLASS MAP, FILE [:system:zsysdef:zsystal]
+
+
+?SECTION define_assigns MACRO
+== ------------------------------------------------------------------
+== Comments go here
+== ------------------------------------------------------------------
+
+ASSIGN WHATEVS, [:repo:gstalsrc:hello]
+
+
+?SECTION define_params MACRO
+== ------------------------------------------------------------------
+== Comments go here
+== ------------------------------------------------------------------
+
+PARAM SUMMAT, [:flags:something_or_other]
+
+
+?SECTION define_gs100obj_hello_rule MACRO
+== ------------------------------------------------------------------
+== Comments go here
+== ------------------------------------------------------------------
+
+[#DEF :gs100obj_hello_dependencies TEXT |BODY|
+  $(b24s1_gs100obj_hello): $(b24s1_gstalsrc_hello)
+  $(system_system_tal)
+]
+
+[#DEF :gs100obj_hello_recipe MACRO |BODY|
+  RUN [:system:system:tal]/IN [:repo:gstalsrc:hello], &
+    OUT [:spooler:gs100obj:hello], TERM $ZHOME/ &
+    [:repo:gs100obj:hello]; [:tal_directives]
+]
+
+
+?SECTION define_gs100exe_hello_rule MACRO
+== ------------------------------------------------------------------
+== Comments go here
+== ------------------------------------------------------------------
+
+[#DEF :gs100exe_hello_dependencies TEXT |BODY|
+  $(b24s1_gs100exe_hello): $(b24s1_gs100obj_hello)
+  $(system_system_ocax)
+]
+
+[#DEF :gs100exe_hello_recipe MACRO |BODY|
+  RUN [:system:system:ocax]/OUT [:spooler:gs100exe:hello], &
+    TERM $ZHOME/ [:repo:gs100obj:hello] &
+    output_file [:repo:gs100exe:hello]
+]
+
+
+== ------------------------------------------------------------------
+== EOF
+== ------------------------------------------------------------------
+
