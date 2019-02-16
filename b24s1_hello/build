@@ -81,7 +81,7 @@ define_gs100exe_hello_rule
   BEGIN
     STRUCT system;
       BEGIN
-        SUBVOL tmp VALUE $DEV1.GSSYSTMP;
+        == no SUBVOL tmp definition needed
         FNAME ctoedit  VALUE $SYSTEM.SYSTEM.CTOEDIT;
         FNAME extdecs  VALUE $SYSTEM.SYSTEM.EXTDECS1;
         FNAME ocax     VALUE $SYSTEM.SYSTEM.OCAX;
