@@ -4,119 +4,135 @@
 == project: awkmake
 == ------------------------------------------------------------------
 
+
+?SECTION define_everything MACRO
 == ------------------------------------------------------------------
-== subvol_ STRUCT
+== Comments go here
 == ------------------------------------------------------------------
-[#DEF :subvol_ STRUCT
+
+define_flags
+define_diskfiles
+define_spooler_locations
+define_defines
+define_assigns
+define_params
+define_make_rules
+
+
+?SECTION define_flags MACRO
+== ------------------------------------------------------------------
+== Comments go here
+== ------------------------------------------------------------------
+
+[#DEF :flags STRUCT
   BEGIN
-    SUBVOL control  VALUE $DEV1.GSCTRL;
-    SUBVOL tmp      VALUE $STAT.GSTMP;
-    SUBVOL gstalsrc VALUE $STAT.GSTALSRC;
+    BOOL :something_or_other VALUE 0;
   END;
 ]
 
+
+?SECTION define_diskfiles MACRO
 == ------------------------------------------------------------------
-== b24s1_hello STRUCT
+== Comments go here
 == ------------------------------------------------------------------
-[#DEF :b24s1_hello STRUCT
+
+==
+== b24s1 - a copy of the secure repository disk
+==
+[#DEF :b24s1 STRUCT
   BEGIN
-    SUBVOL tmp        VALUE $DEV1.GSHELTMP;
-    FNAME build_tacl  VALUE $DEV1.HELLO.BUILD;
+    STRUCT hello;
+      BEGIN
+        SUBVOL tmp VALUE $DEV1.GSHELTMP;
+        FNAME build    VALUE $DEV1.GSHELLO.BUILD;
+      END;
+    STRUCT gstalsrc;
+      BEGIN
+        SUBVOL tmp VALUE $DEV1.GSTALTMP;
+        FNAME hello    VALUE $DEV1.GSTALSRC.HELLO;
+      END;
   END;
 ]
 
-== ------------------------------------------------------------------
-== b24s1_gstalsrc STRUCT
-== ------------------------------------------------------------------
-[#DEF :b24s1_gstalsrc STRUCT
+==
+== system - the system disk
+==
+[#DEF :system STRUCT
   BEGIN
-    SUBVOL tmp       VALUE $DEV1.GSTALTMP;
-    FNAME hello_tal  VALUE $DEV1.GSTALSRC.HELLO;
+    STRUCT system; == subvolume name
+      BEGIN
+        SUBVOL tmp VALUE $DEV1.GSSYSTMP;
+        FNAME ctoedit  VALUE $SYSTEM.SYSTEM.CTOEDIT;
+        FNAME ocax     VALUE $SYSTEM.SYSTEM.OCAX;
+        FNAME tal      VALUE $SYSTEM.SYSTEM.TAL;
+      END;
   END;
 ]
 
+
+?SECTION define_spooler_locations MACRO
 == ------------------------------------------------------------------
-== defines and directives
+== Comments go here
 == ------------------------------------------------------------------
-
-== :add_defines MACRO
-== Doesn't really need to be a macro; if we're going to OBEY this
-== file, then we could just have the bare commands. The advantage of
-== placing the commands in a macro is that the command to add the
-== defines becomes an explicit one within the build, rather than
-== being hidden among the TACL variable definitions.
-[#DEF :add_defines MACRO |BODY|
-
-  == targets and their build log locations
-  DELETE DEFINE =gs100exe_hello
-  ADD DEFINE    =gs100exe_hello, FILE $STAT.GS100EXE.HELLO
-  DELETE DEFINE =gs100exe_hello_log
-  ADD DEFINE    =gs100exe_hello_log, FILE $S.#HELLO.OCAX
-  DELETE DEFINE =gs100obj_hello
-  add define    =gs100obj_hello, FILE $STAT.GS100OBJ.HELLO
-  DELETE DEFINE =gs100obj_hello_log
-  ADD DEFINE    =gs100obj_hello_log, FILE $S.#HELLO.TAL
-  DELETE DEFINE =gstalsrc_hello
-  ADD DEFINE    =gstalsrc_hello, FILE $STAT.GSTALSRC.HELLO
-  DELETE DEFINE =gstalsrc_hello_log
-  ADD DEFINE    =gstalsrc_hello_log, FILE $S.#HELLO.CTOEDIT
-
-  == build tools (leading _ in define name is not mandatory)
-  DELETE DEFINE =_tal
-  ADD DEFINE    =_tal, FILE $SYSTEM.SYSTEM.TAL
-  DELETE DEFINE =_ocax
-  ADD DEFINE    =_ocax, FILE $SYSTEM.SYSTEM.OCAX
-  DELETE DEFINE =_ctoedit
-  ADD DEFINE    =_ctoedit, FILE $SYSTEM.SYSTEM.CTOEDIT
-
-  == subvolumes to hold intermediate source files with code 180
-  DELETE DEFINE =tacl_tmp_svol
-  ADD DEFINE    =tacl_tmp_svol, FILE $DEV1.GSTCTMP
-  DELETE DEFINE =tal_tmp_svol
-  ADD DEFINE    =tal_tmp_svol, FILE $DEV1.GSTLTMP
-  
+[#DEF :spooler STRUCT
+  BEGIN
+    FNAME hello_ocax VALUE $S.#HELLO.OCAX;
+    FNAME hello_tal  VALUE $S.#HELLO.TAL;
+  END;
 ]
 
-== :tal_directives TEXT
-[#DEF :tal_directives TEXT |BODY|OPTIMIZE 0]
 
-
+?SECTION define_defines MACRO
 == ------------------------------------------------------------------
-== gs100obj_hello target
+== Comments go here
+== ------------------------------------------------------------------
+DELETE DEFINE =gstalsrc_hello
+ADD DEFINE    =gstalsrc_hello, [:b24s1:gstalsrc:hello]
+
+
+?SECTION define_assigns MACRO
+== ------------------------------------------------------------------
+== Comments go here
+== ------------------------------------------------------------------
+ASSIGN WHATEVS, [:b24s1:gstalsrc:hello]
+
+
+?SECTION define_params MACRO
+== ------------------------------------------------------------------
+== Comments go here
+== ------------------------------------------------------------------
+PARAM SUMMAT, [:flags:something_or_other]
+
+
+?SECTION define_make_rules MACRO
+== ------------------------------------------------------------------
+== Comments go here
 == ------------------------------------------------------------------
 
+== gs100obj_hello
 [#DEF :gs100obj_hello_dependencies TEXT |BODY|
   $(gs100obj_hello): $(gstalsrc_hello)
   $(_tal)
 ]
-
 [#DEF :gs100obj_hello_recipe MACRO |BODY|
   RUN =_tal/IN =gstalsrc_hello, OUT =gs100obj_hello_log, TERM $ZHOME/ &
     =gs100obj_hello; [:tal_directives]
 ]
 
-== ------------------------------------------------------------------
-== gs100exe_hello target
-== ------------------------------------------------------------------
-
+== gs100obj_exe
 [#DEF :gs100exe_hello_dependencies TEXT |BODY|
   $(gs100exe_hello): $(gs100obj_hello)
   $(_ocax)
 ]
-
 [#DEF :gs100exe_hello_recipe MACRO |BODY|
   RUN =_ocax/OUT =gs100exe_hello_log, TERM $ZHOME/ =gs100obj_hello &
     output_file =gs100exe_hello
 ]
 
-== ------------------------------------------------------------------
-== commented_out target
-== ------------------------------------------------------------------
-
+== commented_out target, for unit testing
 ==[#DEF :commented_out_dependencies TEXT |BODY|
 ==  $(commented_out): $(commented_out_deps)
 ==]
-
 ==[#DEF :commented_out_recipe MACRO |BODY|
 ==  RUN =_ocax/OUT =ocax_out, TERM $ZHOME/ =gs100obj_hello &
 ==    -output_file =gs100exe_hello
