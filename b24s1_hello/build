@@ -63,12 +63,12 @@ define_gs100exe_hello_rule
       END;
     STRUCT gs100obj;
       BEGIN
-        == no tmp definition needed
+        == no SUBVOL tmp definition needed
         FNAME hello    VALUE $DEV1.GS100OBJ.HELLO;
       END;
     STRUCT gs100exe;
       BEGIN
-        == no tmp definition needed
+        == no SUBVOL tmp definition needed
         FNAME hello    VALUE $DEV1.GS100EXE.HELLO;
       END;
   END;
@@ -83,6 +83,7 @@ define_gs100exe_hello_rule
       BEGIN
         SUBVOL tmp VALUE $DEV1.GSSYSTMP;
         FNAME ctoedit  VALUE $SYSTEM.SYSTEM.CTOEDIT;
+        FNAME extdecs  VALUE $SYSTEM.SYSTEM.EXTDECS1;
         FNAME ocax     VALUE $SYSTEM.SYSTEM.OCAX;
         FNAME tal      VALUE $SYSTEM.SYSTEM.TAL;
       END;
@@ -116,8 +117,8 @@ define_gs100exe_hello_rule
 == ------------------------------------------------------------------
 == Comments go here
 == ------------------------------------------------------------------
-DELETE DEFINE =gstalsrc_hello
-ADD DEFINE    =gstalsrc_hello, [:b24s1:gstalsrc:hello]
+DELETE DEFINE =EXTDECS
+ADD DEFINE    =EXTDECS, CLASS MAP, FILE [:system:system:extdecs]
 
 
 ?SECTION define_assigns MACRO
