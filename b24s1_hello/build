@@ -15,6 +15,25 @@
   END;
 ]
 
+== ------------------------------------------------------------------
+== b24s1_hello STRUCT
+== ------------------------------------------------------------------
+[#DEF :b24s1_hello STRUCT
+  BEGIN
+    SUBVOL tmp        VALUE $DEV1.GSHELTMP;
+    FNAME build_tacl  VALUE $DEV1.HELLO.BUILD;
+  END;
+]
+
+== ------------------------------------------------------------------
+== b24s1_gstalsrc STRUCT
+== ------------------------------------------------------------------
+[#DEF :b24s1_gstalsrc STRUCT
+  BEGIN
+    SUBVOL tmp       VALUE $DEV1.GSTALTMP;
+    FNAME hello_tal  VALUE $DEV1.GSTALSRC.HELLO;
+  END;
+]
 
 == ------------------------------------------------------------------
 == defines and directives
