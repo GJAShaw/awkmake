@@ -9,6 +9,7 @@
 == ------------------------------------------------------------------
 == Comments go here
 == ------------------------------------------------------------------
+
 define_flags
 define_texts
 define_diskfiles
@@ -24,6 +25,7 @@ define_gs100exe_hello_rule
 == ------------------------------------------------------------------
 == Comments go here
 == ------------------------------------------------------------------
+
 [#DEF :flags STRUCT
   BEGIN
     BOOL :something_or_other VALUE 0;
@@ -35,6 +37,7 @@ define_gs100exe_hello_rule
 == ------------------------------------------------------------------
 == Comments go here
 == ------------------------------------------------------------------
+
 [#DEF :tal_directives TEXT |BODY|OPTIMIZE 0,SYMBOLS]
 
 
@@ -115,8 +118,8 @@ define_gs100exe_hello_rule
 == Comments go here
 == ------------------------------------------------------------------
 
-DELETE DEFINE =EXTDECS
-ADD DEFINE    =EXTDECS, CLASS MAP, FILE [:system:system:extdecs]
+DELETE DEFINE =EXTDECS1
+ADD DEFINE    =EXTDECS1, CLASS MAP, FILE [:system:system:extdecs1]
 DELETE DEFINE =ZSYSTAL
 ADD DEFINE    =ZSYSTAL, CLASS MAP, FILE [:system:zsysdef:zsystal]
 
