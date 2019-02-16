@@ -11,12 +11,14 @@
 == ------------------------------------------------------------------
 
 define_flags
+define_texts
 define_diskfiles
 define_spooler_locations
 define_defines
 define_assigns
 define_params
-define_make_rules
+define_gs100obj_hello_rule
+define_gs100exe_hello_rule
 
 
 ?SECTION define_flags MACRO
@@ -29,6 +31,14 @@ define_make_rules
     BOOL :something_or_other VALUE 0;
   END;
 ]
+
+
+?SECTION define_texts MACRO
+== ------------------------------------------------------------------
+== Comments go here
+== ------------------------------------------------------------------
+
+[#DEF :tal_directives TEXT |BODY|OPTIMIZE 0,SYMBOLS]
 
 
 ?SECTION define_diskfiles MACRO
@@ -51,6 +61,16 @@ define_make_rules
         SUBVOL tmp VALUE $DEV1.GSTALTMP;
         FNAME hello    VALUE $DEV1.GSTALSRC.HELLO;
       END;
+    STRUCT gs100obj;
+      BEGIN
+        == no tmp definition needed
+        FNAME hello    VALUE $DEV1.GS100OBJ.HELLO;
+      END;
+    STRUCT gs100exe;
+      BEGIN
+        == no tmp definition needed
+        FNAME hello    VALUE $DEV1.GS100EXE.HELLO;
+      END;
   END;
 ]
 
@@ -59,7 +79,7 @@ define_make_rules
 ==
 [#DEF :system STRUCT
   BEGIN
-    STRUCT system; == subvolume name
+    STRUCT system;
       BEGIN
         SUBVOL tmp VALUE $DEV1.GSSYSTMP;
         FNAME ctoedit  VALUE $SYSTEM.SYSTEM.CTOEDIT;
@@ -76,8 +96,18 @@ define_make_rules
 == ------------------------------------------------------------------
 [#DEF :spooler STRUCT
   BEGIN
-    FNAME hello_ocax VALUE $S.#HELLO.OCAX;
-    FNAME hello_tal  VALUE $S.#HELLO.TAL;
+    STRUCT gstalsrc;
+      BEGIN
+        FNAME hello VALUE $S.#HELLO.CTOEDIT;
+      END;
+    STRUCT gs100obj;
+      BEGIN
+        FNAME hello VALUE $S.#HELLO.TAL;
+      END;
+    STRUCT gs100exe;
+      BEGIN
+        FNAME hello VALUE $S.#HELLO.OCAX;
+      END;
   END;
 ]
 
@@ -104,39 +134,38 @@ ASSIGN WHATEVS, [:b24s1:gstalsrc:hello]
 PARAM SUMMAT, [:flags:something_or_other]
 
 
-?SECTION define_make_rules MACRO
+?SECTION define_gs100obj_hello_rule MACRO
 == ------------------------------------------------------------------
 == Comments go here
 == ------------------------------------------------------------------
 
-== gs100obj_hello
 [#DEF :gs100obj_hello_dependencies TEXT |BODY|
-  $(gs100obj_hello): $(gstalsrc_hello)
-  $(_tal)
-]
-[#DEF :gs100obj_hello_recipe MACRO |BODY|
-  RUN =_tal/IN =gstalsrc_hello, OUT =gs100obj_hello_log, TERM $ZHOME/ &
-    =gs100obj_hello; [:tal_directives]
+  $(b24s1_gs100obj_hello): $(b24s1_gstalsrc_hello)
+  $(system_system_tal)
 ]
 
-== gs100obj_exe
+[#DEF :gs100obj_hello_recipe MACRO |BODY|
+  RUN [:system:system:tal]/IN [:b24s1:gstalsrc:hello], &
+    OUT [:spooler:gs100obj:hello], TERM $ZHOME/ &
+    [:b24s1:gs100obj:hello]; [:tal_directives]
+]
+
+
+?SECTION define_gs100exe_hello_rule MACRO
+== ------------------------------------------------------------------
+== Comments go here
+== ------------------------------------------------------------------
+
 [#DEF :gs100exe_hello_dependencies TEXT |BODY|
-  $(gs100exe_hello): $(gs100obj_hello)
-  $(_ocax)
+  $(b24s1_gs100exe_hello): $(b24s1_gs100obj_hello)
+  $(system_system_ocax)
 ]
 [#DEF :gs100exe_hello_recipe MACRO |BODY|
-  RUN =_ocax/OUT =gs100exe_hello_log, TERM $ZHOME/ =gs100obj_hello &
-    output_file =gs100exe_hello
+  RUN [:system:system:ocax]/OUT [:spooler:gs100exe:hello], &
+    TERM $ZHOME/ [:b24s1:gs100obj:hello] &
+    output_file [:b24s1:gs100exe:hello]
 ]
 
-== commented_out target, for unit testing
-==[#DEF :commented_out_dependencies TEXT |BODY|
-==  $(commented_out): $(commented_out_deps)
-==]
-==[#DEF :commented_out_recipe MACRO |BODY|
-==  RUN =_ocax/OUT =ocax_out, TERM $ZHOME/ =gs100obj_hello &
-==    -output_file =gs100exe_hello
-==]
 
 == ------------------------------------------------------------------
 == EOF
