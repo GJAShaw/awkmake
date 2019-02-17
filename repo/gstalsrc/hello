@@ -16,9 +16,9 @@
 ! --------------------------------------------------------------------
 ! Other source
 ! --------------------------------------------------------------------
-?NOLIST
+?NOLIST, NOMAP
 ?IFNOT PTAL
-?  NOMAP, NOCODE
+?  NOCODE
 ?ENDIF
 
 ?SOURCE =EXTDECS1(
@@ -34,9 +34,9 @@
 
 ?SOURCE =ZSYSTAL(FILENAME^CONSTANT)
 
-?LIST
+?LIST, MAP
 ?IFNOT PTAL
-?  MAP, CODE
+?  CODE
 ?ENDIF
 
 ! --------------------------------------------------------------------
