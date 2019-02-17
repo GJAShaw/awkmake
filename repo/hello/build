@@ -28,7 +28,7 @@ define_gs100exe_hello_rule
 
 [#DEF :flags STRUCT
   BEGIN
-    BOOL :something_or_other VALUE 0;
+    BOOL something_or_other VALUE 0;
   END;
 ]
 
@@ -81,10 +81,10 @@ define_gs100exe_hello_rule
         FNAME ocax     VALUE $SYSTEM.SYSTEM.OCAX;
         FNAME tal      VALUE $SYSTEM.SYSTEM.TAL;
       END;
-    STRUCT zsysdef;
+    STRUCT zsysdefs;
       BEGIN
         == no SUBVOL tmp definition needed
-        FNAME zsystal  VALUE $SYSTEM.ZSYSDEF.ZSYSTAL;
+        FNAME zsystal  VALUE $SYSTEM.ZSYSDEFS.ZSYSTAL;
       END;
   END;
 ]
@@ -121,7 +121,7 @@ define_gs100exe_hello_rule
 DELETE DEFINE =EXTDECS1
 ADD DEFINE    =EXTDECS1, CLASS MAP, FILE [:system:system:extdecs1]
 DELETE DEFINE =ZSYSTAL
-ADD DEFINE    =ZSYSTAL, CLASS MAP, FILE [:system:zsysdef:zsystal]
+ADD DEFINE    =ZSYSTAL, CLASS MAP, FILE [:system:zsysdefs:zsystal]
 
 
 ?SECTION define_assigns MACRO
@@ -137,7 +137,7 @@ ASSIGN WHATEVS, [:repo:gstalsrc:hello]
 == Comments go here
 == ------------------------------------------------------------------
 
-PARAM SUMMAT, [:flags:something_or_other]
+PARAM SUMMAT [:flags:something_or_other]
 
 
 ?SECTION define_gs100obj_hello_rule MACRO
