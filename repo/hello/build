@@ -12,8 +12,8 @@
 
 define_flags
 define_texts
-define_repo_source_files
-define_other_files
+define_diskfiles_repository_source
+define_diskfiles_other
 define_spooler_locations
 define_defines
 define_assigns
@@ -40,10 +40,10 @@ define_gs100exe_hello_rule
 == Comments go here
 == ------------------------------------------------------------------
 
-[#DEF :tal_directives TEXT |BODY|OPTIMIZE 0,SYMBOLS]
+[#DEF :tal_directives TEXT |BODY|OPTIMIZE 0] == Let OCAX optimize
 
 
-?SECTION define_repo_source_files MACRO
+?SECTION define_diskfiles_repository_source MACRO
 == ------------------------------------------------------------------
 == Comments go here
 == ------------------------------------------------------------------
@@ -64,7 +64,7 @@ define_gs100exe_hello_rule
 ]
 
 
-?SECTION define_other_files MACRO
+?SECTION define_diskfiles_other MACRO
 == ------------------------------------------------------------------
 == Comments go here
 == ------------------------------------------------------------------
