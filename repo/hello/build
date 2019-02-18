@@ -12,7 +12,8 @@
 
 define_flags
 define_texts
-define_diskfiles
+define_repo_source_files
+define_other_files
 define_spooler_locations
 define_defines
 define_assigns
@@ -23,12 +24,13 @@ define_gs100exe_hello_rule
 
 ?SECTION define_flags MACRO
 == ------------------------------------------------------------------
-== Comments go here
+== Reserved for future use
 == ------------------------------------------------------------------
 
 [#DEF :flags STRUCT
   BEGIN
-    BOOL something_or_other VALUE 0;
+    BOOL false VALUE 0;
+    BOOL true  VALUE -1;
   END;
 ]
 
@@ -41,12 +43,12 @@ define_gs100exe_hello_rule
 [#DEF :tal_directives TEXT |BODY|OPTIMIZE 0,SYMBOLS]
 
 
-?SECTION define_diskfiles MACRO
+?SECTION define_repo_source_files MACRO
 == ------------------------------------------------------------------
 == Comments go here
 == ------------------------------------------------------------------
 
-[#DEF :repo STRUCT == repository disk
+[#DEF :repo STRUCT
   BEGIN
     STRUCT hello;
       BEGIN
@@ -58,14 +60,23 @@ define_gs100exe_hello_rule
         SUBVOL tmp VALUE $STAT.GSTALTMP;
         FNAME hello    VALUE $STAT.GSTALSRC.HELLO;
       END;
+  END;
+]
+
+
+?SECTION define_other_files MACRO
+== ------------------------------------------------------------------
+== Comments go here
+== ------------------------------------------------------------------
+
+[#DEF :targets STRUCT
+  BEGIN
     STRUCT gs100obj;
       BEGIN
-        == no SUBVOL tmp definition needed
         FNAME hello    VALUE $STAT.GS100OBJ.HELLO;
       END;
     STRUCT gs100exe;
       BEGIN
-        == no SUBVOL tmp definition needed
         FNAME hello    VALUE $STAT.GS100EXE.HELLO;
       END;
   END;
@@ -75,7 +86,6 @@ define_gs100exe_hello_rule
   BEGIN
     STRUCT system;
       BEGIN
-        == no SUBVOL tmp definition needed
         FNAME ctoedit  VALUE $SYSTEM.SYSTEM.CTOEDIT;
         FNAME extdecs1 VALUE $SYSTEM.SYSTEM.EXTDECS1;
         FNAME ocax     VALUE $SYSTEM.SYSTEM.OCAX;
@@ -83,7 +93,6 @@ define_gs100exe_hello_rule
       END;
     STRUCT zsysdefs;
       BEGIN
-        == no SUBVOL tmp definition needed
         FNAME zsystal  VALUE $SYSTEM.ZSYSDEFS.ZSYSTAL;
       END;
   END;
@@ -126,7 +135,7 @@ ADD DEFINE    =ZSYSTAL, CLASS MAP, FILE [:system:zsysdefs:zsystal]
 
 ?SECTION define_assigns MACRO
 == ------------------------------------------------------------------
-== Comments go here
+== Reserved for future use
 == ------------------------------------------------------------------
 
 ASSIGN WHATEVS, [:repo:gstalsrc:hello]
@@ -134,7 +143,7 @@ ASSIGN WHATEVS, [:repo:gstalsrc:hello]
 
 ?SECTION define_params MACRO
 == ------------------------------------------------------------------
-== Comments go here
+== Reserved for future use
 == ------------------------------------------------------------------
 
 PARAM SUMMAT [:flags:something_or_other]
