@@ -1,5 +1,5 @@
 == ------------------------------------------------------------------
-== file: build
+== file: build.tacl
 == type: TACL for Guardian software build using GNU Make
 == project: awkmake
 == ------------------------------------------------------------------
@@ -12,9 +12,10 @@
 
 define_flags
 define_texts
-define_diskfiles_source
-define_diskfiles_target
-define_diskfiles_other
+map_source_to_guardian180
+map_guardian180_to_guardian101
+define_targets
+define_resources
 define_defines
 define_assigns
 define_params
@@ -43,28 +44,55 @@ define_gs100exe_hello_rule
 [#DEF :tal_directives TEXT |BODY|OPTIMIZE 0] == Let OCAX optimize
 
 
-?SECTION define_diskfiles_source MACRO
+?SECTION map_source_to_guardian180 MACRO
 == ------------------------------------------------------------------
-== Comments go here
+== Map each src subdirectory in the OSS repository to a Guardian
+== intermediate subvolume to hold C-format source files (code 180)
 == ------------------------------------------------------------------
 
-[#DEF :repo STRUCT
+== ****TODO AWK should make a pattern Make rule for each, e.g.
+== /G/stat/gstaltmp/%: gstalsrc/%
+==	cp $< $@
+
+[#DEF :gstalsrc STRUCT
   BEGIN
-    STRUCT hello;
-      BEGIN
-        SUBVOL tmp VALUE $STAT.GSHELTMP;
-        FNAME build    VALUE $STAT.GSHELLO.BUILD;
-      END;
-    STRUCT gstalsrc;
-      BEGIN
-        SUBVOL tmp VALUE $STAT.GSTALTMP;
-        FNAME hello    VALUE $STAT.GSTALSRC.HELLO;
-      END;
+    SUBVOL sv180 VALUE $STAT.GS180TAL;
+  END;
+]
+
+[#DEF :gstacl STRUCT
+  BEGIN
+    SUBVOL sv180 VALUE $STAT.GS180TAC;
   END;
 ]
 
 
-?SECTION define_diskfiles_target MACRO
+?SECTION map_guardian180_to_guardian101 MACRO
+== ------------------------------------------------------------------
+== Map each subvolume of C-format source files (code 180) to a
+== subvolume of EDIT-format source files (code 101)
+== ------------------------------------------------------------------
+
+== ****TODO AWK should make a pattern Make rule for each, e.g.
+== /G/stat/gstalsrc/%: /G/stat/gs180tal/%
+==	gtacl -p CTOEDIT '$(call guardian($<)), $(call guardian($@))'
+
+[#DEF :gstalsrc STRUCT
+  BEGIN
+    SUBVOL sv180 VALUE $STAT.GS180TAL;
+    SUBVOL sv101 VALUE $STAT.GSTALSRC;
+  END;
+]
+
+[#DEF :gstacl STRUCT
+  BEGIN
+    SUBVOL sv180 VALUE $STAT.GS180TAC;
+    SUBVOL sv180 VALUE $STAT.GSTACL;
+  END;
+]
+
+
+?SECTION define_targets MACRO
 == ------------------------------------------------------------------
 == Comments go here
 == ------------------------------------------------------------------
@@ -101,9 +129,9 @@ define_gs100exe_hello_rule
 ]
 
 
-?SECTION define_diskfiles_other MACRO
+?SECTION define_resources MACRO
 == ------------------------------------------------------------------
-== Comments go here
+== Compilers, linkers, libraries, etc
 == ------------------------------------------------------------------
 
 [#DEF :system STRUCT == system disk
@@ -125,7 +153,8 @@ define_gs100exe_hello_rule
 
 ?SECTION define_defines MACRO
 == ------------------------------------------------------------------
-== Comments go here
+== Comments go here ****TODO oughtn't these to be target-specific?,
+== i.e. in a new field in each target STRUCT
 == ------------------------------------------------------------------
 
 DELETE DEFINE =EXTDECS1
