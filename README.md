@@ -5,12 +5,10 @@ Using AWK to build GNU Makefiles
 Work in progress.
 
 ## build.tacl
-TACL script for use in building targets in the Guardian filesystem, e.g. a TAL project
+TACL script defining build methods for a project in the Guardian filesystem
 
-## printVariables.awk
-GAWK script to read build.tacl and create a GNU Makefile defining variables
-
-## (more GAWK scripts to follow...)
+## createBuildmk.awk
+GAWK script to read build.tacl and create a GNU Makefile
 
 ## Makefile
 Master GNU Makefile
