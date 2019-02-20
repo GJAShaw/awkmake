@@ -12,9 +12,9 @@
 
 define_flags
 define_texts
-define_diskfiles_repository_source
+define_diskfiles_source
+define_diskfiles_target
 define_diskfiles_other
-define_spooler_locations
 define_defines
 define_assigns
 define_params
@@ -43,7 +43,7 @@ define_gs100exe_hello_rule
 [#DEF :tal_directives TEXT |BODY|OPTIMIZE 0] == Let OCAX optimize
 
 
-?SECTION define_diskfiles_repository_source MACRO
+?SECTION define_diskfiles_source MACRO
 == ------------------------------------------------------------------
 == Comments go here
 == ------------------------------------------------------------------
@@ -64,23 +64,47 @@ define_gs100exe_hello_rule
 ]
 
 
-?SECTION define_diskfiles_other MACRO
+?SECTION define_diskfiles_target MACRO
 == ------------------------------------------------------------------
 == Comments go here
 == ------------------------------------------------------------------
 
-[#DEF :targets STRUCT
+[#DEF :gs100obj_hello STRUCT
   BEGIN
-    STRUCT gs100obj;
+    FNAME name VALUE $STAT.GS.100OBJ.HELLO;
+    FNAME log  VALUE $S.#GS100OBJ.HELLO
+    STRUCT dependency;
       BEGIN
-        FNAME hello    VALUE $STAT.GS100OBJ.HELLO;
+        CHAR(0:30) data VALUE ":gs100obj_hello_dependency";
       END;
-    STRUCT gs100exe;
+    STRUCT recipe;
       BEGIN
-        FNAME hello    VALUE $STAT.GS100EXE.HELLO;
+        CHAR(0:30) data VALUE ":gs100obj_hello_recipe";
       END;
   END;
 ]
+
+
+[#DEF :gs100exe_hello STRUCT
+  BEGIN
+    FNAME name VALUE $STAT.GS.100EXE.HELLO;
+    FNAME log  VALUE $S.#GS100OBJ.HELLO
+    STRUCT dependency;
+      BEGIN
+        CHAR(0:30) data VALUE ":gs100exe_hello_dependency"; == will this work? we need to teach AWK to expand a TACL variable!
+      END;
+    STRUCT recipe;
+      BEGIN
+        CHAR(0:30) data VALUE ":gs100exe_hello_recipe";
+      END;
+  END;
+]
+
+
+?SECTION define_diskfiles_other MACRO
+== ------------------------------------------------------------------
+== Comments go here
+== ------------------------------------------------------------------
 
 [#DEF :system STRUCT == system disk
   BEGIN
@@ -94,29 +118,6 @@ define_gs100exe_hello_rule
     STRUCT zsysdefs;
       BEGIN
         FNAME zsystal  VALUE $SYSTEM.ZSYSDEFS.ZSYSTAL;
-      END;
-  END;
-]
-
-
-?SECTION define_spooler_locations MACRO
-== ------------------------------------------------------------------
-== Comments go here
-== ------------------------------------------------------------------
-
-[#DEF :spooler STRUCT
-  BEGIN
-    STRUCT gstalsrc;
-      BEGIN
-        FNAME hello VALUE $S.#HELLO.CTOEDIT;
-      END;
-    STRUCT gs100obj;
-      BEGIN
-        FNAME hello VALUE $S.#HELLO.TAL;
-      END;
-    STRUCT gs100exe;
-      BEGIN
-        FNAME hello VALUE $S.#HELLO.OCAX;
       END;
   END;
 ]
@@ -146,7 +147,7 @@ ASSIGN WHATEVS, [:repo:gstalsrc:hello]
 == Reserved for future use
 == ------------------------------------------------------------------
 
-PARAM SUMMAT [:flags:something_or_other]
+PARAM SUMMAT [:flags:true]
 
 
 ?SECTION define_gs100obj_hello_rule MACRO
@@ -154,15 +155,15 @@ PARAM SUMMAT [:flags:something_or_other]
 == Comments go here
 == ------------------------------------------------------------------
 
-[#DEF :gs100obj_hello_dependencies TEXT |BODY|
-  $(b24s1_gs100obj_hello): $(b24s1_gstalsrc_hello)
+[#DEF :gs100obj_hello_dependency TEXT |BODY|
+  $(gs100obj_hello): $(gstalsrc_hello)
   $(system_system_tal)
 ]
 
 [#DEF :gs100obj_hello_recipe MACRO |BODY|
-  RUN [:system:system:tal]/IN [:repo:gstalsrc:hello], &
-    OUT [:spooler:gs100obj:hello], TERM $ZHOME/ &
-    [:repo:gs100obj:hello]; [:tal_directives]
+  RUN [:system:system:tal]/IN [:gstalsrc_hello:name], &
+    OUT [:gs100obj_hello:name], TERM $ZHOME/ &
+    [gs100obj_hello:name]; [:tal_directives]
 ]
 
 
@@ -171,15 +172,15 @@ PARAM SUMMAT [:flags:something_or_other]
 == Comments go here
 == ------------------------------------------------------------------
 
-[#DEF :gs100exe_hello_dependencies TEXT |BODY|
-  $(b24s1_gs100exe_hello): $(b24s1_gs100obj_hello)
+[#DEF :gs100exe_hello_dependency TEXT |BODY|
+  $(gs100exe_hello): $(gs100obj_hello)
   $(system_system_ocax)
 ]
 
 [#DEF :gs100exe_hello_recipe MACRO |BODY|
-  RUN [:system:system:ocax]/OUT [:spooler:gs100exe:hello], &
-    TERM $ZHOME/ [:repo:gs100obj:hello] &
-    output_file [:repo:gs100exe:hello]
+  RUN [:system:system:ocax]/OUT [:gs100exe_hello:log], &
+    TERM $ZHOME/ [:gs100obj_hello:name] &
+    output_file [:gs100exe_hello:name]
 ]
 
 
