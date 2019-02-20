@@ -8,18 +8,14 @@
 # variables
 # ------------------------------------------------------------------------------
 
-export build_tacl := ./subvol_control/build
-export rules_mk := ./rules.mk
-export variables_mk := ./variables.mk
+export build_tacl := ./repo/hello/build
+export build_mk := ./build.mk
 
 targets :=
-targets += \
-  $(rules_mk) \
-  $(variables_mk)
-  
+targets += $(build_mk)
+
 scripts_dir := ./scripts
-printRules_awk := $(scripts_dir)/printRules.awk
-printVariables_awk := $(scripts_dir)/printVariables.awk
+createBuildmk_awk := $(scripts_dir)/createBuildmk.awk
 
 RM := rm -fR
 
@@ -43,23 +39,11 @@ all: $(targets)
 .PHONY: .ONESHELL all clean
 
 # --------------------------------------
-# rules_mk
+# build_mk
 # --------------------------------------
-$(rules_mk): $(build_tacl) $(printRules_awk)
+$(build_mk): $(build_tacl) $(createBuildmk_awk)
 	@echo "Building $@"
-	@$(printRules_awk) < $(build_tacl) > "$@" 2> /dev/null
-
-# --------------------------------------
-# variables_mk
-# --------------------------------------
-$(variables_mk): $(build_tacl) $(printVariables_awk)
-	@echo "Building $@"
-	@$(printVariables_awk) < $(build_tacl) > "$@" 2> /dev/null
-
-# --------------------------------------
-# 
-# --------------------------------------
-
+	$(createBuildmk_awk) < $(build_tacl) > "$@" #2> /dev/null
 
 # --------------------------------------
 # clean
