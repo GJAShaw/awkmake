@@ -8,6 +8,7 @@
 ?SECTION define_everything MACRO
 == ------------------------------------------------------------------
 == Comments go here
+== AWK doesn't need to read this section.
 == ------------------------------------------------------------------
 
 define_flags
@@ -26,6 +27,7 @@ define_gs100exe_hello_rule
 ?SECTION define_flags MACRO
 == ------------------------------------------------------------------
 == Reserved for future use
+== AWK doesn't need to read this section.
 == ------------------------------------------------------------------
 
 [#DEF :flags STRUCT
@@ -39,6 +41,7 @@ define_gs100exe_hello_rule
 ?SECTION define_texts MACRO
 == ------------------------------------------------------------------
 == Comments go here
+== AWK doesn't need to read this section.
 == ------------------------------------------------------------------
 
 [#DEF :tal_directives TEXT |BODY|OPTIMIZE 0] == Let OCAX optimize
@@ -97,6 +100,11 @@ define_gs100exe_hello_rule
 == Comments go here
 == ------------------------------------------------------------------
 
+== ****TODO AWK should make a Make rule for each, e.g.
+== /G/stat/gstalobjhello: /G/stat/gstalsrc/hello /G/system/system/tal%
+==	echo 'Building @@; logging to $(whatevs_log)'
+==	gtacl -c '$(call tacl($whatevs_command))'
+
 [#DEF :gs100obj_hello STRUCT
   BEGIN
     FNAME name VALUE $STAT.GS.100OBJ.HELLO;
@@ -132,6 +140,7 @@ define_gs100exe_hello_rule
 ?SECTION define_resources MACRO
 == ------------------------------------------------------------------
 == Compilers, linkers, libraries, etc
+== AWK doesn't need to read this section.
 == ------------------------------------------------------------------
 
 [#DEF :system STRUCT == system disk
@@ -153,8 +162,8 @@ define_gs100exe_hello_rule
 
 ?SECTION define_defines MACRO
 == ------------------------------------------------------------------
-== Comments go here ****TODO oughtn't these to be target-specific?,
-== i.e. in a new field in each target STRUCT
+== Comments go here
+== AWK doesn't need to read this section.
 == ------------------------------------------------------------------
 
 DELETE DEFINE =EXTDECS1
@@ -166,6 +175,7 @@ ADD DEFINE    =ZSYSTAL, CLASS MAP, FILE [:system:zsysdefs:zsystal]
 ?SECTION define_assigns MACRO
 == ------------------------------------------------------------------
 == Reserved for future use
+== AWK doesn't need to read this section.
 == ------------------------------------------------------------------
 
 ASSIGN WHATEVS, [:repo:gstalsrc:hello]
@@ -174,6 +184,7 @@ ASSIGN WHATEVS, [:repo:gstalsrc:hello]
 ?SECTION define_params MACRO
 == ------------------------------------------------------------------
 == Reserved for future use
+== AWK doesn't need to read this section.
 == ------------------------------------------------------------------
 
 PARAM SUMMAT [:flags:true]
@@ -184,6 +195,8 @@ PARAM SUMMAT [:flags:true]
 == Comments go here
 == ------------------------------------------------------------------
 
+== ****TODO AWK must read the dependency string, and use it in the
+== rule created from the targets info.
 [#DEF :gs100obj_hello_dependency TEXT |BODY|
   $(gs100obj_hello): $(gstalsrc_hello)
   $(system_system_tal)
