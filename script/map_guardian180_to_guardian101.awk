@@ -7,10 +7,17 @@
 # This program reads TACL source and creates part of a GNU Makefile
 # ------------------------------------------------------------------------------
 
+# ----
+#BEGIN
+# ----
 BEGIN {
     IGNORECASE = 1 # gawk feature
+    print ""
+    print "# ---------------------------------------------"
+    print "# CTOEDIT C-format source to EDIT-format source"
+    print "# ---------------------------------------------"
+    print ""
 }
-
 
 # -------------
 # Define functions
@@ -36,25 +43,17 @@ BEGIN {
 
 # Deal with section contents appropriately
 /^.*$/ {
-    switch (section) {
-        case "map_source_to_guardian180":
-            print section
-            break
-        case "map_guardian180_to_guardian101":
-            print section
-            break
-        case "define_targets":
-            print section
-            break
-        case "define_[[:alpha:]][[:alnum:]_]*_rule":
-            print section
-            break
-        default:
-            break
+    if (section == "map_guardian180_to_guardian101") {
+        print "stub!" section
     }
 }
 
-
+# ---
+# END
+# ---
+END {
+    print ""
+}
 
 # ------------------------------------------------------------------------------
 # EOF
