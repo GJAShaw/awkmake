@@ -9,7 +9,7 @@
 # ------------------------------------------------------------------------------
 
 # source - build_tacl
-export build_tacl := build.tacl
+build_tacl := build.tacl
 
 # scripts used to create targets
 script_dir := script
