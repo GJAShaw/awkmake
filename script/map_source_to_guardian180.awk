@@ -20,6 +20,11 @@ BEGIN {
 }
 
 # -------------
+# Include library
+# -------------
+@include "script/library.awk" # @include is a gawk feature
+
+# -------------
 # Define functions
 # -------------
 
@@ -42,9 +47,35 @@ BEGIN {
 }
 
 # Deal with section contents appropriately
-/^.*$/ {
+// {
     if (section == "map_source_to_guardian180") {
-        print "stub!" section
+   
+        # Look for a "[#DEF :dir STRUCT" line...
+        if (match($0, /#DEF[[:space:]]+:?[[:alpha:]][[:alnum:]]{0,7}[[:space:]]\
++STRUCT/) > 0) { # regex must continue in first column
+            def_dir_struct = substr($0, RSTART, RLENGTH)
+            delete def_dir_struct_array
+            split(def_dir_struct, def_dir_struct_array)
+            colon_dir = def_dir_struct_array[2]
+            match(colon_dir, /[^:]+/) # find what isn't a colon
+            dir = substr(colon_dir, RSTART, RLENGTH)
+        }
+
+        # Look for a "SUBVOL sv180 VALUE $VOL.SVOL;" line...
+        if (match($0, /SUBVOL[[:space:]]+sv180[[:space:]]+VALUE/) > 0) {
+            subvol_semicolon = $4
+            match(subvol_semicolon, /[^;]+/) # find what isn't a colon
+            subvol = substr(subvol_semicolon, RSTART, RLENGTH)
+            subvol_oss = oss_subvol_of(subvol)
+            
+            # print the Make rule:
+            print ""
+            print subvol_oss "/%: src/" dir "/%"
+            print "\t@echo 'Copying $< to $@...'"
+            print "\t@cp -Wclobber $< $@"
+            print ""
+        }
+
     }
 }
 
@@ -54,6 +85,13 @@ BEGIN {
 END {
     print ""
 }
+
+#[#DEF :gstalsrc STRUCT
+#  BEGIN
+#    SUBVOL sv180 VALUE $STAT.GS180TAL;
+#  END;
+#]
+
 
 # ------------------------------------------------------------------------------
 # EOF
