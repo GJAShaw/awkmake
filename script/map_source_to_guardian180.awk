@@ -4,7 +4,26 @@
 # type: GAWK program
 # project: awkmake
 #
-# This program reads TACL source and creates part of a GNU Makefile
+# This program reads a TACL libarary file and creates part of a GNU Makefile.
+#
+# The only lines of interest to this program in the TACL file are those within
+# ?SECTION map_source_to_guardian180.
+#
+# Empty TACL lines and commented-out TACL lines are ignored.
+#
+# Within the section, the program looks for all STRUCTs of this format:
+#
+# [#DEF :gstalsrc STRUCT == colon is not mandatory, but is good practice
+#   BEGIN
+#     SUBVOL sv180 VALUE $STAT.GS180TAL; == sv180 name is mandatory
+#   END;
+# ]
+#
+# For each STRUCT, this program writes a GNU Make pattern rule, e.g.
+#
+# /G/stat/gs180tal/%: src/gstalsrc/%
+#	@echo 'Copying $< to $@...'
+#	@cp -Wclobber $< $@ 
 # ------------------------------------------------------------------------------
 
 # ----
@@ -23,12 +42,6 @@ BEGIN {
 # Include library
 # -------------
 @include "script/library.awk" # @include is a gawk feature
-
-# -------------
-# Define functions
-# -------------
-
-# (none yet)
 
 # -------------
 # Process input
@@ -71,7 +84,7 @@ BEGIN {
             # print the Make rule:
             print ""
             print subvol_oss "/%: src/" dir "/%"
-            print "\t@echo 'Copying $< to $@...'"
+            print "\t@echo 'Copying $< to $@...'" # ****TODO call $(gname...$@)
             print "\t@cp -Wclobber $< $@"
             print ""
         }
@@ -85,13 +98,6 @@ BEGIN {
 END {
     print ""
 }
-
-#[#DEF :gstalsrc STRUCT
-#  BEGIN
-#    SUBVOL sv180 VALUE $STAT.GS180TAL;
-#  END;
-#]
-
 
 # ------------------------------------------------------------------------------
 # EOF
