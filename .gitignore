@@ -3,5 +3,14 @@
 # type: Git ignore file
 # project: awkmake
 # ------------------------------------------------------------------------------
+
+# stuff I just don't want to track
 /untracked/
+
+# target makefiles
 *.mk
+
+# GAWK debugging
+**/.gawk_history
+**/.gawkrc
+
