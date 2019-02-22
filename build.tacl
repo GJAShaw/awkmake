@@ -56,9 +56,9 @@ define_gs100exe_hello_rule
 == , but I wanted to make it clear that the value must be a SUBVOL.
 == ------------------------------------------------------------------
 
-[#DEF :gstalsrc STRUCT
+[#DEF :gstalsrc STRUCT == colon isn't mandatory, but is good practice
   BEGIN
-    SUBVOL sv180 VALUE $STAT.GS180TAL;
+    SUBVOL sv180 VALUE $STAT.GS180TAL; == sv180 name is mandatory
   END;
 ]
 
