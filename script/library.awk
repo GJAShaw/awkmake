@@ -1,9 +1,7 @@
-#!/usr/bin/gawk -f
 # ------------------------------------------------------------------------------
 # file: library.awk
 # type: GAWK function library file
 # project: awkmake
-#
 # ------------------------------------------------------------------------------
 
 # ----
@@ -14,11 +12,50 @@ BEGIN {
 }
 
 # ------------------------------------------------------------------------------
-# oss_fname
-# returns: OSS-style name for a Guardian file, e.g. /G/dev1/talsrc/hello
-# parameter: Guardian filename, e.g. $DEV1.TALSRC.HELLO
+# guardian_fname_of
+# returns: Guardian-style filename, e.g. $DEV1.TALSRC.HELLO
+#    The filename returned is not case-shifted.
+# parameter: OSS-style name for a Guardian file, e.g. /G/dev1/talsrc/hello
+#    A partially-qualified ("relative") filename is acceptable.
+#
+# I tried writing this with one gensub() and two sub() calls, but got bogged
+# down in regex failure, so I resorted to an array method.
 # ------------------------------------------------------------------------------
-function oss_fname (GUARDIAN_FNAME) {
+function guardian_fname_of(oss_fname) {
+
+    # Split sysname, volume, subvolume and filename into an array
+    delete array # ensure no previous version exists
+    array_length = split(guardian_fname, array, "/")
+    
+    # Define an empty string
+    file = ""
+    
+    # Check for system name
+    if (1 in array) {
+        if (array[1] == "E") {
+            if (2 in array) {
+                sysname = array[2]
+                delete array[1]
+                delete array[2]
+            } else {
+                sysname = ""
+            }
+        }
+    }
+    
+    # ****TODO later: finish, rewrite, whatever. I need a break from this.
+    return "workInProgress"
+
+}
+
+# ------------------------------------------------------------------------------
+# oss_fname_of
+# returns: OSS-style name for a Guardian file, e.g. /G/dev1/talsrc/hello
+#    The filename returned is downshifted except for directory names E and G.
+# parameter: Guardian filename, e.g. $DEV1.TALSRC.HELLO
+#    A partially-qualified ("relative") filename is acceptable.
+# ------------------------------------------------------------------------------
+function oss_fname_of(GUARDIAN_FNAME) {
 
     # Shift filename to lower case
     guardian_fname = tolower(GUARDIAN_FNAME)
