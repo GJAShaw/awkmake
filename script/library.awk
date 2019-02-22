@@ -110,5 +110,63 @@ function oss_fname_of(GUARDIAN_FNAME) {
 }
 
 # ------------------------------------------------------------------------------
+# oss_subvol_of
+# returns: OSS-style name for a Guardian subvolume, e.g. /G/dev1/talsrc
+#    The name returned is downshifted except for directory names E and G.
+# parameter: Guardian subvolume name, e.g. $DEV1.TALSRC
+#    A partially-qualified ("relative") subvolume name is acceptable.
+#
+# There is a LOT of duplication between this and function oss_fname_of(). There
+# is very probably a neat groovy way to amalgamate the two, but currently I am
+# struggling to see it. There seem to be too many possibilities for the
+# argument string, 
+# ------------------------------------------------------------------------------
+function oss_subvol_of(GUARDIAN_SUBVOL) {
+
+    # Shift filename to lower case
+    guardian_subvol = tolower(GUARDIAN_SUBVOL)
+
+    # Split sysname, volume, subvolume into an array
+    delete array # ensure no previous version exists
+    array_length = split(guardian_subvol, array, ".")
+    
+    # Create backarray, with elements of array reversed
+    delete backarray # ensure no previous version exists
+    for (i in array) {
+        backarray[i] = array[(array_length - i) + 1]
+    }
+    
+    # Get backarray elements; filename, subvolume, volume, sysname
+    if (1 in backarray) {
+        subvol = backarray[1]
+    } else {
+        subvol = ""
+    }
+
+    if (2 in backarray) { # remove "$" prefix
+        volume = gensub(/\$/, "", 1, backarray[2])
+    } else {
+        volume = ""
+    }
+
+    if (3 in backarray) { # remove "\" prefix
+        sysname = gensub(/\\/, "", 1, backarray[3])
+    } else {
+        sysname = ""
+    }
+
+    # Build OSS path
+    oss_path = subvol
+    if (length(volume) > 0)
+        oss_path = "/G/" volume "/" oss_path
+    if (length(sysname) > 0)
+        oss_path = "/E/" sysname oss_path
+    
+    # Return
+    return oss_path
+
+}
+
+# ------------------------------------------------------------------------------
 # EOF
 # ------------------------------------------------------------------------------
