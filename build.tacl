@@ -50,7 +50,10 @@ define_gs100exe_hello_rule
 ?SECTION map_source_to_guardian180 MACRO
 == ------------------------------------------------------------------
 == Map each src subdirectory in the OSS repository to a Guardian
-== intermediate subvolume to hold C-format source files (code 180)
+== intermediate subvolume to hold C-format source files (code 180).
+== I could have gone for a simpler way to define these settings, e.g.
+== [#DEF :gstalsrc TEXT |BODY|$STAT.GSTALSRC]
+== , but I wanted to make it clear that the value must be a SUBVOL.
 == ------------------------------------------------------------------
 
 == ****TODO AWK should make a pattern Make rule for each, e.g.
