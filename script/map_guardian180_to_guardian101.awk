@@ -49,17 +49,6 @@ BEGIN {
 @include "script/library.awk" # @include is a gawk feature
 
 # -------------
-# Defin
-# -------------
-function printRule(sv_target, sv_dependency) {
-    print ""
-    print sv_target "/%: " sv_dependency "/%"
-    print "\t@echo 'CTOEDIT $<, $@...'" # ****TODO call $(gname...$@)
-    print "\t@$(call TACL,$(CTOEDIT $<, $@))"
-    print ""
-}
-
-# -------------
 # Process input
 # -------------
 
@@ -85,36 +74,44 @@ function printRule(sv_target, sv_dependency) {
             got_sv101 = 0
         }
         
-        # Look for a "SUBVOL sv180 VALUE $VOL.SVOL;" line...
-        if (match($0, /SUBVOL[[:space:]]+sv180[[:space:]]+VALUE/) > 0) {
+        # Look for a "SUBVOL sv1xx VALUE $VOL.SVOL;" line...
+        if (match($0, \
+                /SUBVOL[[:space:]]+sv1[[:digit:]]{2}[[:space:]]+VALUE/) > 0 \
+            ) {
+            sv_file_code = $2
             subvol_semicolon = $4
-            match(subvol_semicolon, /[^;]+/) # find what isn't a colon
-            subvol_180 = substr(subvol_semicolon, RSTART, RLENGTH)
-            subvol_180_oss = oss_subvol_of(subvol_180)
-            got_sv180 = 1
-            if (got_sv180 && got_sv101) {
-                printRule(subvol_101_oss, subvol_180_oss)
-                got_sv180 = 0
-                got_sv101 = 0
-            }
-        }
-            
-        # Look for a "SUBVOL sv110 VALUE $VOL.SVOL;" line...
-        if (match($0, /SUBVOL[[:space:]]+sv101[[:space:]]+VALUE/) > 0) {
-            subvol_semicolon = $4
-            match(subvol_semicolon, /[^;]+/) # find what isn't a colon
-            subvol_101 = substr(subvol_semicolon, RSTART, RLENGTH)
-            subvol_101_oss = oss_subvol_of(subvol_101)
-            got_sv101 = 1
-            if (got_sv180 && got_sv101) {
-                printRule(subvol_101_oss, subvol_180_oss)
-                got_sv180 = 0
-                got_sv101 = 0
-            }
-        }
+            match(subvol_semicolon, /[^;]+/) # find what isn't a semicolon
+            subvol_1xx = substr(subvol_semicolon, RSTART, RLENGTH)
+            subvol_1xx_oss = oss_subvol_of(subvol_1xx)
 
-    }
-}
+            switch (sv_file_code) {
+                case "sv180":
+                    subvol_180_oss = subvol_1xx_oss
+                    got_sv180 = 1
+                    break
+                case "sv101":
+                    subvol_101_oss = subvol_1xx_oss
+                    got_sv101 = 1
+                    break
+                default:
+                    # should not be able to get here
+                    break
+            }
+
+            if (got_sv180 && got_sv101) {
+                print ""
+                print subvol_101_oss "/%: " subvol_180_oss "/%"
+                print "\t@echo 'CTOEDIT $<, $@...'" # ****TODO call $(gname...$@)
+                print "\t@$(call TACL,$(CTOEDIT $<, $@))"
+                print ""
+                got_sv180 = 0
+                got_sv101 = 0
+            }
+        } # end if for SUBVOL
+
+    } #end if for SECTION
+
+} #end action
 
 # ------------------------------------------------------------------------------
 # EOF
