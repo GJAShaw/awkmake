@@ -13,7 +13,7 @@
 #
 # Within the section, the program looks for all STRUCTs of this format:
 #
-# [#DEF :gstalsrc STRUCT == colon is not mandatory, but is good practice
+# [#DEF :gstalsrc STRUCT == colon isn't mandatory, but is good practice
 #   BEGIN
 #     SUBVOL sv180 VALUE $STAT.GS180TAL; == sv180 name is mandatory
 #   END;
@@ -90,13 +90,6 @@ BEGIN {
         }
 
     }
-}
-
-# ---
-# END
-# ---
-END {
-    print ""
 }
 
 # ------------------------------------------------------------------------------

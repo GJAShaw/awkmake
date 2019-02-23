@@ -75,21 +75,17 @@ define_gs100exe_hello_rule
 == subvolume of EDIT-format source files (code 101)
 == ------------------------------------------------------------------
 
-== ****TODO AWK should make a pattern Make rule for each, e.g.
-== /G/stat/gstalsrc/%: /G/stat/gs180tal/%
-==	gtacl -p CTOEDIT '$(call guardian($<)), $(call guardian($@))'
-
-[#DEF :gstalsrc STRUCT
+[#DEF :gstalmap STRUCT == colon isn't mandatory, but is good practice
   BEGIN
-    SUBVOL sv180 VALUE $STAT.GS180TAL;
-    SUBVOL sv101 VALUE $STAT.GSTALSRC;
+    SUBVOL sv180 VALUE $STAT.GS180TAL; == sv180 name is mandatory
+    SUBVOL sv101 VALUE $STAT.GSTALSRC; == sv101 name is mandatory
   END;
 ]
 
-[#DEF :gstacl STRUCT
+[#DEF :gstacmap STRUCT
   BEGIN
     SUBVOL sv180 VALUE $STAT.GS180TAC;
-    SUBVOL sv180 VALUE $STAT.GSTACL;
+    SUBVOL sv101 VALUE $STAT.GSTACL;
   END;
 ]
 
