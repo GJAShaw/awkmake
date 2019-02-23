@@ -26,7 +26,7 @@
 # 	@echo 'CTOEDIT $<, $@...'
 # 	@$(call TACL,$(CTOEDIT $<, $@))
 #
-# NB the STRUCT name (in this case :gstalsrc) isn't actually read by the GAWK
+# NB the STRUCT name (in this case :gstalmap) isn't actually read by the GAWK
 # program, so technically you could make it any valid TACL variable name you
 # liked. However, it seems sensible to call it something meaningful.
 # ------------------------------------------------------------------------------
