@@ -95,15 +95,11 @@ define_gs100exe_hello_rule
 == Comments go here
 == ------------------------------------------------------------------
 
-== ****TODO AWK should make a Make rule for each, e.g.
-== /G/stat/gstalobjhello: /G/stat/gstalsrc/hello /G/system/system/tal%
-==	echo 'Building @@; logging to $(whatevs_log)'
-==	gtacl -c '$(call tacl($whatevs_command))'
-
 [#DEF :gs100obj_hello STRUCT
   BEGIN
-    FNAME name VALUE $STAT.GS100OBJ.HELLO;
-    FNAME log  VALUE $S.#GS100OBJ.HELLO
+    FNAME name   VALUE $STAT.GS100OBJ.HELLO;
+    FNAME log    VALUE $S.#GS100OBJ.HELLO;
+    FNAME secure VALUE NONE;
     STRUCT dependency;
       BEGIN
         CHAR(0:30) data VALUE ":gs100obj_hello_dependency";
@@ -118,8 +114,9 @@ define_gs100exe_hello_rule
 
 [#DEF :gs100exe_hello STRUCT
   BEGIN
-    FNAME name VALUE $STAT.GS100EXE.HELLO;
-    FNAME log  VALUE $S.#GS100EXE.HELLO
+    FNAME name   VALUE $STAT.GS100EXE.HELLO;
+    FNAME log    VALUE $S.#GS100EXE.HELLO;
+    FNAME secure VALUE $DEV1.GS100EXE.HELLO;
     STRUCT dependency;
       BEGIN
         CHAR(0:30) data VALUE ":gs100exe_hello_dependency"; == will this work? we need to teach AWK to expand a TACL variable!

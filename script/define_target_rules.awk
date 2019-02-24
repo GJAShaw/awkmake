@@ -59,11 +59,12 @@ BEGIN {
             got_target_name = 1
             got_target_fname = 0
             got_target_log = 0
+            got_target_secure = 0
             got_target_dependency_taclvar = 0
             got_target_recipe_taclvar = 0
         }
         
-        # Look for a "FNAME name VALUE..." or "FNAME log VALUE..." line...
+        # Look for a "FNAME name/log/secure VALUE..." line...
         if (match($0, /FNAME[[:space:]]+[[:alpha:]]+[[:space:]]+VALUE/) > 0) {
             file_type = $2
 
@@ -75,6 +76,10 @@ BEGIN {
                 case "log":
                     target_log = gensub(/;/, "", "g", $4)
                     got_target_log = 1
+                    break
+                case "secure":
+                    target_secure = gensub(/;/, "", "g", $4)
+                    got_target_secure = 1
                     break
                 default:
                     # should not be able to get here
@@ -110,6 +115,7 @@ BEGIN {
             got_target_name && \
             got_target_fname && \
             got_target_log && \
+            got_target_secure && \
             got_target_dependency_taclvar && \
             got_target_recipe_taclvar \
         ) {
@@ -117,6 +123,7 @@ BEGIN {
             temp_array["target_name"] = target_name
             temp_array["target_fname"] = oss_fname_of(target_fname)
             temp_array["target_log"] = target_log
+            temp_array["target_secure"] = oss_fname_of(target_secure)
             temp_array["target_dependency_taclvar"] = target_dependency_taclvar
             temp_array["target_recipe_taclvar"] = target_recipe_taclvar
             for (element in temp_array)
@@ -124,11 +131,10 @@ BEGIN {
             got_target_name = 0
             got_target_fname = 0
             got_target_log = 0
+            got_target_secure = 0
             got_target_dependency_taclvar = 0
             got_target_recipe_taclvar = 0
         }
-        
-        # ****TODO here, do we need a function call: print if we have all info?
 
         break # end case ?SECTION define_targets
     case "define_[[:alpha:]][[:alnum:]_]*_rule":
