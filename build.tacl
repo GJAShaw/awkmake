@@ -102,7 +102,7 @@ define_gs100exe_hello_rule
 
 [#DEF :gs100obj_hello STRUCT
   BEGIN
-    FNAME name VALUE $STAT.GS.100OBJ.HELLO;
+    FNAME name VALUE $STAT.GS100OBJ.HELLO;
     FNAME log  VALUE $S.#GS100OBJ.HELLO
     STRUCT dependency;
       BEGIN
@@ -118,8 +118,8 @@ define_gs100exe_hello_rule
 
 [#DEF :gs100exe_hello STRUCT
   BEGIN
-    FNAME name VALUE $STAT.GS.100EXE.HELLO;
-    FNAME log  VALUE $S.#GS100OBJ.HELLO
+    FNAME name VALUE $STAT.GS100EXE.HELLO;
+    FNAME log  VALUE $S.#GS100EXE.HELLO
     STRUCT dependency;
       BEGIN
         CHAR(0:30) data VALUE ":gs100exe_hello_dependency"; == will this work? we need to teach AWK to expand a TACL variable!
