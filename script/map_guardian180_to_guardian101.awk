@@ -79,9 +79,7 @@ BEGIN {
                 /SUBVOL[[:space:]]+sv1[[:digit:]]{2}[[:space:]]+VALUE/) > 0 \
             ) {
             sv_file_code = $2
-            subvol_semicolon = $4
-            match(subvol_semicolon, /[^;]+/) # find what isn't a semicolon
-            subvol_1xx = substr(subvol_semicolon, RSTART, RLENGTH)
+            subvol_1xx = gensub(/;/, "", "g", $4)
             subvol_1xx_oss = oss_subvol_of(subvol_1xx)
 
             switch (sv_file_code) {
