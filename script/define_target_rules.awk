@@ -137,9 +137,27 @@ BEGIN {
         }
 
         break # end case ?SECTION define_targets
-    case "define_[[:alpha:]][[:alnum:]_]*_rule":
-        print "stub!" section
-        break
+    case /define_[[:alpha:]][[:alnum:]_]*[[:alnum:]]+_rule/:
+ 
+         # Look for #DEF...dependency..." line
+        if (match($0, /#DEF[[:space:]]+[^[:space:]]+_dependency[[:space:]]+/) \
+              > 0 \
+        ) {
+            $0 = substr($0, RSTART, RLENGTH)
+            target_dependency_label = gensub(/:/, "", "g", $2)
+            got_dependency_label = 1
+            got_dependency_info = 0
+        }
+        
+        # ****TODO finish code! Till then, a stub:
+        print "Stub. Got target dependency label: " target_dependency_label
+#[#DEF :gs100obj_hello_dependency TEXT |BODY|
+#  $(gs100obj_hello): $(gstalsrc_hello)
+#  $(system_system_tal)
+#]
+
+        
+        break # end case ?SECTION define_xxx_yyy_rule
     default:
         break
     }
