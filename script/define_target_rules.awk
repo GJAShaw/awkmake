@@ -196,15 +196,6 @@ END {
         print "\t@$(call TACL," targets_array[i]["target_recipe_taclvar"] ")"
         print ""
 
-# @$(call TACL,$(CTOEDIT $<, $@))"
-#            temp_array["target_name"] = target_name
-#            temp_array["target_fname"] = oss_fname_of(target_fname)
-#            temp_array["target_log"] = target_log
-#            temp_array["target_secure"] = oss_fname_of(target_secure)
-#            temp_array["target_dependency_taclvar"] = target_dependency_taclvar
-#            temp_array["target_recipe_taclvar"] = target_recipe_taclvar
- 
-
     }
     
 #    print ""
