@@ -126,8 +126,8 @@ BEGIN {
             temp_array["target_secure"] = oss_fname_of(target_secure)
             temp_array["target_dependency_taclvar"] = target_dependency_taclvar
             temp_array["target_recipe_taclvar"] = target_recipe_taclvar
-            for (element in temp_array)
-                targets_array[target_name][element] = temp_array[element] 
+            for (array_index in temp_array)
+                targets_array[target_name][array_index] = temp_array[array_index] 
             got_target_name = 0
             got_target_fname = 0
             got_target_log = 0
@@ -139,24 +139,40 @@ BEGIN {
         break # end case ?SECTION define_targets
     case /define_[[:alpha:]][[:alnum:]_]*[[:alnum:]]+_rule/:
  
-         # Look for #DEF...dependency..." line
+        # Look for #DEF...dependency..." line
         if (match($0, /#DEF[[:space:]]+[^[:space:]]+_dependency[[:space:]]+/) \
               > 0 \
         ) {
             $0 = substr($0, RSTART, RLENGTH)
-            target_dependency_label = gensub(/:/, "", "g", $2)
+            target_dependency_label = $2
             got_dependency_label = 1
-            got_dependency_info = 0
+            got_dependency_text = 0
+            old_RS = RS
+            RS = "]"
+            next
         }
         
-        # ****TODO finish code! Till then, a stub:
-        print "Stub. Got target dependency label: " target_dependency_label
-#[#DEF :gs100obj_hello_dependency TEXT |BODY|
-#  $(gs100obj_hello): $(gstalsrc_hello)
-#  $(system_system_tal)
-#]
-
+        # Get the dependency text - everything up to the next "]"
+        if (got_dependency_label && !got_dependency_text) {
+            target_dependency_text = $0
+            got_dependency_text = 1
+            RS = old_RS
+            next
+        }
         
+        # Add the dependency data to dependencies_array
+        if (got_dependency_label && got_dependency_text) { 
+            delete temp_array
+            temp_array["target_dependency_label"] = target_dependency_label
+            temp_array["target_dependency_text"] = target_dependency_text
+            for (array_index in temp_array) {
+                dependencies_array[target_dependency_label][array_index] = \
+                    temp_array[array_index]
+            }
+            got_dependency_label = 0
+            got_dependency_text = 0            
+        }
+      
         break # end case ?SECTION define_xxx_yyy_rule
     default:
         break
@@ -166,12 +182,39 @@ BEGIN {
 # ---
 # END
 # ---
-END { # ****TODO get rid of stub printer block, once development is complete
+END {
+
+    # print rules
     for (i in targets_array) {
-        for (j in targets_array[i])
-            printf("%s ", targets_array[i][j])
+    
+        # ****TODO remove whitespace from the target_dependency_text
+        tgt_deps = dependencies_array[targets_array[i]["target_dependency_taclvar"]]["target_dependency_text"]
+        gsub(/^[[:space:]]*$/, "", tgt_deps) # remove empty lines - DOESN'T WORK
+        gsub(/^[[:space:]]*/, "", tgt_deps) # remove leading whitespace - ONLY CATCHES FIRST LINE
+        print tgt_deps
+        print "\t@echo'Building $@, logging to " targets_array[i]["target_log"] "...'"
+        print "\t@$(call TACL," targets_array[i]["target_recipe_taclvar"] ")"
         print ""
+
+# @$(call TACL,$(CTOEDIT $<, $@))"
+#            temp_array["target_name"] = target_name
+#            temp_array["target_fname"] = oss_fname_of(target_fname)
+#            temp_array["target_log"] = target_log
+#            temp_array["target_secure"] = oss_fname_of(target_secure)
+#            temp_array["target_dependency_taclvar"] = target_dependency_taclvar
+#            temp_array["target_recipe_taclvar"] = target_recipe_taclvar
+ 
+
     }
+    
+#    print ""
+#    print "dependencies_array:"
+#    for (i in dependencies_array) {
+#        for (j in dependencies_array[i])
+#            printf("%s ", dependencies_array[i][j])
+#        print ""
+#    }
+
     
 }
 

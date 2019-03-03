@@ -187,10 +187,8 @@ PARAM SUMMAT [:flags:true]
 == Comments go here
 == ------------------------------------------------------------------
 
-== ****TODO AWK must read the dependency string, and use it in the
-== rule created from the targets info.
 [#DEF :gs100obj_hello_dependency TEXT |BODY|
-  $(gs100obj_hello): $(gstalsrc_hello)
+  $(gs100obj_hello): $(gstalsrc_hello) \
   $(system_system_tal)
 ]
 
@@ -207,7 +205,7 @@ PARAM SUMMAT [:flags:true]
 == ------------------------------------------------------------------
 
 [#DEF :gs100exe_hello_dependency TEXT |BODY|
-  $(gs100exe_hello): $(gs100obj_hello)
+  $(gs100exe_hello): $(gs100obj_hello) \
   $(system_system_ocax)
 ]
 
