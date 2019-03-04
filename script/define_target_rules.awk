@@ -154,7 +154,7 @@ BEGIN {
         
         # Get the dependency text - everything up to the next "]"
         if (got_dependency_label && !got_dependency_text) {
-            target_dependency_text = $0
+            target_dependency_text = $0 # ****TODO remove empty lines & leading whitespace
             got_dependency_text = 1
             RS = old_RS
             next
@@ -192,9 +192,9 @@ END {
         gsub(/^[[:space:]]*$/, "", tgt_deps) # remove empty lines - DOESN'T WORK
         gsub(/^[[:space:]]*/, "", tgt_deps) # remove leading whitespace - ONLY CATCHES FIRST LINE
         print tgt_deps
-        print "\t@echo'Building $@, logging to " targets_array[i]["target_log"] "...'"
+        print "\t@echo 'Building $@, logging to $" targets_array[i]["target_log"] "...'"
         print "\t@$(call TACL," targets_array[i]["target_recipe_taclvar"] ")"
-        print ""
+        print "\n"
 
     }
     
