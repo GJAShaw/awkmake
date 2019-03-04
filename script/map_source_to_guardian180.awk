@@ -61,29 +61,8 @@ BEGIN {
 
 # Deal with section contents appropriately
 // {
-    if (section == "map_source_to_guardian180") {
-   
-        # Look for a "[#DEF :dir STRUCT" line...
-        if (match($0, /#DEF[[:space:]]+:?[[:alpha:]][[:alnum:]]{0,7}[[:space:]]\
-+STRUCT/) > 0) { # regex must continue in first column
-            $0 = substr($0, RSTART, RLENGTH)
-            dir = gensub(/:/, "", "g", $2)
-        }
-
-        # Look for a "SUBVOL sv180 VALUE $VOL.SVOL;" line...
-        if (match($0, /SUBVOL[[:space:]]+sv180[[:space:]]+VALUE/) > 0) {
-            subvol = gensub(/:/, "", "g", $4)
-            subvol_oss = oss_subvol_of(subvol)
-            
-            # print the Make rule:
-            print ""
-            print subvol_oss "/%: src/" dir "/%"
-            print "\t@echo 'Copying $< to $@...'" # ****TODO call $(gname...$@)
-            print "\t@cp -Wclobber $< $@"
-            print ""
-        }
-
-    }
+    if (section == "map_source_to_guardian180")
+       get_source_info()
 }
 
 # ------------------------------------------------------------------------------

@@ -12,6 +12,32 @@ BEGIN {
 }
 
 # ------------------------------------------------------------------------------
+# get_source_info
+# ------------------------------------------------------------------------------
+function get_source_info(    dir, subvol_oss) {
+
+    # Look for a "[#DEF :dir STRUCT" line...
+    if (match($0, /#DEF[[:space:]]+:?[[:alpha:]][[:alnum:]]{0,7}[[:space:]]\
++STRUCT/) > 0) { # regex must continue in first column
+        $0 = substr($0, RSTART, RLENGTH)
+        dir = gensub(/:/, "", "g", $2)
+    }
+
+    # Look for a "SUBVOL sv180 VALUE $VOL.SVOL;" line...
+    if (match($0, /SUBVOL[[:space:]]+sv180[[:space:]]+VALUE/) > 0) {
+        subvol_oss = oss_subvol_of(gensub(/:/, "", "g", $4))
+           
+        # print the Make rule:
+        print ""
+        print subvol_oss "/%: src/" dir "/%"
+        print "\t@echo 'Copying $< to $@...'" # ****TODO call $(gname...$@)
+        print "\t@cp -Wclobber $< $@"
+        print ""
+    }
+
+}
+
+# ------------------------------------------------------------------------------
 # guardian_fname_of
 # returns: Guardian-style filename, e.g. $DEV1.TALSRC.HELLO
 #    The filename returned is not case-shifted.
