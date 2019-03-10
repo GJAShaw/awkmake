@@ -12,27 +12,30 @@ BEGIN {
 }
 
 # ------------------------------------------------------------------------------
-# get_source_info
+# build_source_array
 # ------------------------------------------------------------------------------
-function get_source_info(    dir, subvol_oss) {
+function build_source_array(    dir,subvol_oss) {
 
     # Look for a "[#DEF :dir STRUCT" line...
     if (match($0, /#DEF[[:space:]]+:?[[:alpha:]][[:alnum:]]{0,7}[[:space:]]\
 +STRUCT/) > 0) { # regex must continue in first column
         $0 = substr($0, RSTART, RLENGTH)
         dir = gensub(/:/, "", "g", $2)
+        temp_array["dir"] = dir
     }
 
     # Look for a "SUBVOL sv180 VALUE $VOL.SVOL;" line...
     if (match($0, /SUBVOL[[:space:]]+sv180[[:space:]]+VALUE/) > 0) {
-        subvol_oss = oss_subvol_of(gensub(/:/, "", "g", $4))
-           
-        # print the Make rule:
-        print ""
-        print subvol_oss "/%: src/" dir "/%"
-        print "\t@echo 'Copying $< to $@...'" # ****TODO call $(gname...$@)
-        print "\t@cp -Wclobber $< $@"
-        print ""
+        subvol_oss = oss_subvol_of(gensub(/;/, "", "g", $4))
+        temp_array["subvol_oss"] = subvol_oss 
+    }
+    
+    # If we've got both dir and subvol_oss, put them into source_array
+    if (length(temp_array) == 2) {
+        for (label in temp_array) {
+            source_array[temp_array["dir"]][label] = temp_array[label]
+        }
+        delete temp_array
     }
 
 }

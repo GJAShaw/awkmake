@@ -13,26 +13,16 @@ build_tacl := build.tacl
 
 # scripts used to create targets
 script_dir := script
+taclToMake_awk := taclToMake.awk
 vpath %.awk $(script_dir)
 
-# targets - makefiles and parts thereof
+# target files
 build_mk := build.mk
-define_target_rules_mk := define_target_rules.mk
-map_guardian180_to_guardian101_mk := map_guardian180_to_guardian101.mk
-map_source_to_guardian180_mk := map_source_to_guardian180.mk
-
-# concatenate the partials in the order you want their contents within build.mk
-partial_makefiles :=
-partial_makefiles +=\
-$(define_target_rules_mk) \
-$(map_guardian180_to_guardian101_mk) \
-$(map_source_to_guardian180_mk)
 
 # targets list, for $(RM)
 targets :=
 targets +=\
-$(build_mk) \
-$(partial_makefiles)
+$(build_mk)
 
 # miscellaneous
 RM := rm -fR
@@ -59,16 +49,9 @@ all: $(build_mk)
 # --------------------------------------
 # build_mk
 # --------------------------------------
-$(build_mk): $(partial_makefiles)
+$(build_mk): $(build_tacl) $(taclToMake_awk)
 	@echo "Building $@"
-	@cat $(partial_makefiles) > $@ #2> /dev/null
-
-# --------------------------------------
-# partial makefiles
-# --------------------------------------
-%.mk: $(build_tacl) %.awk
-	@echo "Building $@"
-	@$(script_dir)/$*.awk < $(build_tacl) > $@ #2> /dev/null
+	@$(script_dir)/$(taclToMake_awk) < $(build_tacl) > $@ #2> /dev/null
 
 # --------------------------------------
 # clean
