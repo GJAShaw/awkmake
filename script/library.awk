@@ -14,7 +14,7 @@ BEGIN {
 # ------------------------------------------------------------------------------
 # build_source_array
 # ------------------------------------------------------------------------------
-function build_source_array(    dir,subvol_oss) {
+function build_source_array(    dir,sv180,sv101) {
 
     # Look for a "[#DEF :dir STRUCT" line...
     if (match($0, /#DEF[[:space:]]+:?[[:alpha:]][[:alnum:]]{0,7}[[:space:]]\
@@ -26,12 +26,18 @@ function build_source_array(    dir,subvol_oss) {
 
     # Look for a "SUBVOL sv180 VALUE $VOL.SVOL;" line...
     if (match($0, /SUBVOL[[:space:]]+sv180[[:space:]]+VALUE/) > 0) {
-        subvol_oss = oss_subvol_of(gensub(/;/, "", "g", $4))
-        temp_array["subvol_oss"] = subvol_oss 
+        sv180 = oss_subvol_of(gensub(/;/, "", "g", $4))
+        temp_array["sV180"] = sv180
     }
     
-    # If we've got both dir and subvol_oss, put them into source_array
-    if (length(temp_array) == 2) {
+    # Look for a "SUBVOL sv101 VALUE $VOL.SVOL;" line...
+    if (match($0, /SUBVOL[[:space:]]+sv101[[:space:]]+VALUE/) > 0) {
+        sv101 = oss_subvol_of(gensub(/;/, "", "g", $4))
+        temp_array["sv101"] = sv101 
+    }
+    
+    # If we've got all three quantities, put them into source_array
+    if (length(temp_array) == 3) {
         for (label in temp_array) {
             source_array[temp_array["dir"]][label] = temp_array[label]
         }

@@ -49,7 +49,7 @@ BEGIN {
 // {
     switch (section) {
 
-    case "map_source_to_guardian180":
+    case "map_source":
         build_source_array()
         break
         
@@ -208,7 +208,8 @@ END {
 #        print "\n"
 #
 #    }
-    
+
+    # ****TODO Once development is over, don't print the array contents!    
     print ""
     print "source_array:"
     for (i in source_array) {
@@ -216,15 +217,6 @@ END {
             printf("%s ", source_array[i][j])
         print ""
     }
-
-#    print ""
-#    print "dependencies_array:"
-#    for (i in dependencies_array) {
-#        for (j in dependencies_array[i])
-#            printf("%s ", dependencies_array[i][j])
-#        print ""
-#    }
-
     
 }
 

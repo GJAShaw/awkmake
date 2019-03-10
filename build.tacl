@@ -13,8 +13,7 @@
 
 define_flags
 define_texts
-map_source_to_guardian180
-map_guardian180_to_guardian101
+map_source
 define_targets
 define_resources
 define_defines
@@ -47,42 +46,21 @@ define_gs100exe_hello_rule
 [#DEF :tal_directives TEXT |BODY|OPTIMIZE 0] == Let OCAX optimize
 
 
-?SECTION map_source_to_guardian180 MACRO
+?SECTION map_source MACRO
 == ------------------------------------------------------------------
 == Map each src subdirectory in the OSS repository to a Guardian
-== intermediate subvolume to hold C-format source files (code 180).
-== I could have gone for a simpler way to define these settings, e.g.
-== [#DEF :gstalsrc TEXT |BODY|$STAT.GSTALSRC]
-== , but I wanted to make it clear that the value must be a SUBVOL.
+== intermediate subvolume to hold C-format source files (code 180),
+== then to a Guardian subvolume of EDIT-format files (code 101).
 == ------------------------------------------------------------------
 
 [#DEF :gstalsrc STRUCT == colon isn't mandatory, but is good practice
-  BEGIN
-    SUBVOL sv180 VALUE $STAT.GS180TAL; == sv180 name is mandatory
-  END;
-]
-
-[#DEF :gstacl STRUCT
-  BEGIN
-    SUBVOL sv180 VALUE $STAT.GS180TAC;
-  END;
-]
-
-
-?SECTION map_guardian180_to_guardian101 MACRO
-== ------------------------------------------------------------------
-== Map each subvolume of C-format source files (code 180) to a
-== subvolume of EDIT-format source files (code 101)
-== ------------------------------------------------------------------
-
-[#DEF :gstalmap STRUCT == colon isn't mandatory, but is good practice
   BEGIN
     SUBVOL sv180 VALUE $STAT.GS180TAL; == sv180 name is mandatory
     SUBVOL sv101 VALUE $STAT.GSTALSRC; == sv101 name is mandatory
   END;
 ]
 
-[#DEF :gstacmap STRUCT
+[#DEF :gstacl STRUCT
   BEGIN
     SUBVOL sv180 VALUE $STAT.GS180TAC;
     SUBVOL sv101 VALUE $STAT.GSTACL;
