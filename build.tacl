@@ -78,13 +78,16 @@ define_gs100exe_hello_rule
     FNAME name   VALUE $STAT.GS100OBJ.HELLO;
     FNAME log    VALUE $S.#GS100OBJ.HELLO;
     FNAME secure VALUE NONE;
-    STRUCT dependency;
+    STRUCT dependencies;
       BEGIN
-        CHAR(0:30) data VALUE ":gs100obj_hello_dependency";
-      END;
-    STRUCT recipe;
-      BEGIN
-        CHAR(0:30) data VALUE ":gs100obj_hello_recipe";
+        STRUCT d01;
+          BEGIN
+            CHAR(0:30) data VALUE "$(gstalsrc_hello)";
+          END;
+        STRUCT d02;
+          BEGIN
+            CHAR(0:30) data VALUE "$(system_system_tal)";
+          END;
       END;
   END;
 ]
@@ -95,13 +98,16 @@ define_gs100exe_hello_rule
     FNAME name   VALUE $STAT.GS100EXE.HELLO;
     FNAME log    VALUE $S.#GS100EXE.HELLO;
     FNAME secure VALUE $DEV1.GS100EXE.HELLO;
-    STRUCT dependency;
+    STRUCT dependencies;
       BEGIN
-        CHAR(0:30) data VALUE ":gs100exe_hello_dependency";
-      END;
-    STRUCT recipe;
-      BEGIN
-        CHAR(0:30) data VALUE ":gs100exe_hello_recipe";
+        STRUCT d01;
+          BEGIN
+            CHAR(0:30) data VALUE "$(gs100obj_hello)";
+          END;
+        STRUCT d02;
+          BEGIN
+            CHAR(0:30) data VALUE "$(system_system_ocax)";
+          END;
       END;
   END;
 ]
@@ -110,22 +116,36 @@ define_gs100exe_hello_rule
 ?SECTION define_resources MACRO
 == ------------------------------------------------------------------
 == Compilers, linkers, libraries, etc
-== AWK doesn't need to read this section.
 == ------------------------------------------------------------------
 
-[#DEF :system STRUCT == system disk
+[#DEF :system_system_ctoedit STRUCT
   BEGIN
-    STRUCT system;
-      BEGIN
-        FNAME ctoedit  VALUE $SYSTEM.SYSTEM.CTOEDIT;
-        FNAME extdecs1 VALUE $SYSTEM.SYSTEM.EXTDECS1;
-        FNAME ocax     VALUE $SYSTEM.SYSTEM.OCAX;
-        FNAME tal      VALUE $SYSTEM.SYSTEM.TAL;
-      END;
-    STRUCT zsysdefs;
-      BEGIN
-        FNAME zsystal  VALUE $SYSTEM.ZSYSDEFS.ZSYSTAL;
-      END;
+    FNAME f VALUE $SYSTEM.SYSTEM.CTOEDIT;
+  END;
+]
+
+[#DEF :system_system_extdecs1 STRUCT
+  BEGIN
+    FNAME f VALUE $SYSTEM.SYSTEM.EXTDECS1;
+  END;
+]
+
+
+[#DEF :system_system_ocax STRUCT
+  BEGIN
+    FNAME f VALUE $SYSTEM.SYSTEM.OCAX;
+  END;
+]
+
+[#DEF :system_system_tal STRUCT
+  BEGIN
+    FNAME f VALUE $SYSTEM.SYSTEM.TAL;
+  END;
+]
+
+[#DEF :system_zsysdefs_zsystal STRUCT
+  BEGIN
+    FNAME f VALUE $SYSTEM.ZSYSDEFS.ZSYSTAL;
   END;
 ]
 
