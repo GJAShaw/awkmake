@@ -76,17 +76,17 @@ define_gs100exe_hello_rule
 [#DEF :gs100obj_hello STRUCT
   BEGIN
     FNAME name   VALUE $STAT.GS100OBJ.HELLO;
-    FNAME log    VALUE $S.#GS100OBJ.HELLO;
+    FNAME log    VALUE $S.#HELLO.TALOUT;
     FNAME secure VALUE NONE;
     STRUCT dependencies;
       BEGIN
         STRUCT d01;
           BEGIN
-            CHAR(0:30) data VALUE "$(gstalsrc_hello)";
+            CHAR data(0:30) VALUE "$(gstalsrc_hello)";
           END;
         STRUCT d02;
           BEGIN
-            CHAR(0:30) data VALUE "$(system_system_tal)";
+            CHAR data(0:30) VALUE "$(system_system_tal)";
           END;
       END;
   END;
@@ -96,17 +96,17 @@ define_gs100exe_hello_rule
 [#DEF :gs100exe_hello STRUCT
   BEGIN
     FNAME name   VALUE $STAT.GS100EXE.HELLO;
-    FNAME log    VALUE $S.#GS100EXE.HELLO;
+    FNAME log    VALUE $S.#HELLO.OCAXOUT;
     FNAME secure VALUE $DEV1.GS100EXE.HELLO;
     STRUCT dependencies;
       BEGIN
         STRUCT d01;
           BEGIN
-            CHAR(0:30) data VALUE "$(gs100obj_hello)";
+            CHAR data(0:30) VALUE "$(gs100obj_hello)";
           END;
         STRUCT d02;
           BEGIN
-            CHAR(0:30) data VALUE "$(system_system_ocax)";
+            CHAR data(0:30) VALUE "$(system_system_ocax)";
           END;
       END;
   END;
