@@ -19,8 +19,6 @@ define_dependencies
 define_defines
 define_assigns
 define_params
-define_gs100obj_hello_rule
-define_gs100exe_hello_rule
 
 
 ?SECTION define_flags MACRO
@@ -80,14 +78,10 @@ define_gs100exe_hello_rule
     FNAME secure VALUE NONE;
     STRUCT dependencies;
       BEGIN
-        STRUCT d01;
-          BEGIN
-            CHAR data(0:30) VALUE "$(gstalsrc_hello)";
-          END;
-        STRUCT d02;
-          BEGIN
-            CHAR data(0:30) VALUE "$(system_system_tal)";
-          END;
+        CHAR d01(0:30) VALUE "gstalsrc_hello";
+        CHAR d02(0:30) VALUE "system_system_tal";
+        CHAR d03(0:30) VALUE "system_system_extdecs1";
+        CHAR d04(0:30) VALUE "system_zsysdefs_zsystal";
       END;
   END;
 ]
@@ -100,14 +94,8 @@ define_gs100exe_hello_rule
     FNAME secure VALUE $DEV1.GS100EXE.HELLO;
     STRUCT dependencies;
       BEGIN
-        STRUCT d01;
-          BEGIN
-            CHAR data(0:30) VALUE "$(gs100obj_hello)";
-          END;
-        STRUCT d02;
-          BEGIN
-            CHAR data(0:30) VALUE "$(system_system_ocax)";
-          END;
+        CHAR d01(0:30) VALUE "gs100obj_hello";
+        CHAR d02(0:30) VALUE "system_system_ocax";
       END;
   END;
 ]
@@ -157,9 +145,9 @@ define_gs100exe_hello_rule
 == ------------------------------------------------------------------
 
 DELETE DEFINE =EXTDECS1
-ADD DEFINE    =EXTDECS1, CLASS MAP, FILE [:system:system:extdecs1]
+ADD DEFINE    =EXTDECS1, CLASS MAP, FILE [:system_system_extdecs1]
 DELETE DEFINE =ZSYSTAL
-ADD DEFINE    =ZSYSTAL, CLASS MAP, FILE [:system:zsysdefs:zsystal]
+ADD DEFINE    =ZSYSTAL, CLASS MAP, FILE [:system_zsysdefs_zsystal]
 
 
 ?SECTION define_assigns MACRO
@@ -168,7 +156,7 @@ ADD DEFINE    =ZSYSTAL, CLASS MAP, FILE [:system:zsysdefs:zsystal]
 == AWK doesn't need to read this section.
 == ------------------------------------------------------------------
 
-ASSIGN WHATEVS, [:repo:gstalsrc:hello]
+ASSIGN WHATEVS, [:gstalsrc_hello]
 
 
 ?SECTION define_params MACRO
@@ -180,38 +168,24 @@ ASSIGN WHATEVS, [:repo:gstalsrc:hello]
 PARAM SUMMAT [:flags:true]
 
 
-?SECTION define_gs100obj_hello_rule MACRO
+?SECTION gs100obj_hello_recipe MACRO
 == ------------------------------------------------------------------
 == Comments go here
 == ------------------------------------------------------------------
 
-[#DEF :gs100obj_hello_dependency TEXT |BODY|
-  $(gs100obj_hello): $(gstalsrc_hello) \
-  $(system_system_tal)
-]
-
-[#DEF :gs100obj_hello_recipe MACRO |BODY|
-  RUN [:system:system:tal]/IN [:gstalsrc_hello:name], &
-    OUT [:gs100obj_hello:name], TERM $ZHOME/ &
-    [gs100obj_hello:name]; [:tal_directives]
-]
+RUN [:system_system_tal]/IN [:gstalsrc_hello:name], &
+  OUT [:gs100obj_hello:name], TERM $ZHOME/ &
+  [gs100obj_hello:name]; [:tal_directives]
 
 
-?SECTION define_gs100exe_hello_rule MACRO
+?SECTION gs100exe_hello_recipe MACRO
 == ------------------------------------------------------------------
 == Comments go here
 == ------------------------------------------------------------------
 
-[#DEF :gs100exe_hello_dependency TEXT |BODY|
-  $(gs100exe_hello): $(gs100obj_hello) \
-  $(system_system_ocax)
-]
-
-[#DEF :gs100exe_hello_recipe MACRO |BODY|
-  RUN [:system:system:ocax]/OUT [:gs100exe_hello:log], &
-    TERM $ZHOME/ [:gs100obj_hello:name] &
-    output_file [:gs100exe_hello:name]
-]
+RUN [:system_system_ocax]/OUT [:gs100exe_hello:log], &
+  TERM $ZHOME/ [:gs100obj_hello:name] &
+  output_file [:gs100exe_hello:name]
 
 
 == ------------------------------------------------------------------
