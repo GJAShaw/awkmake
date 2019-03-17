@@ -133,7 +133,6 @@ define_params
   END;
 ]
 
-
 [#DEF :system_ocax STRUCT
   BEGIN
     FNAME f VALUE $SYSTEM.SYSTEM.OCAX;
