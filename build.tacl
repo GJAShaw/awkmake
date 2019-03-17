@@ -103,7 +103,7 @@ define_params
 
 ?SECTION define_dependencies MACRO
 == ------------------------------------------------------------------
-== Edit-format source file, compilers, linkers, libraries, etc
+== Edit-format source files, compilers, linkers, libraries, etc
 == ------------------------------------------------------------------
 
 == Source
