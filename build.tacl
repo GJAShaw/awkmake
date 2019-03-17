@@ -13,9 +13,9 @@
 
 define_flags
 define_texts
-map_source
+define_source
 define_targets
-define_resources
+define_dependencies
 define_defines
 define_assigns
 define_params
@@ -46,7 +46,7 @@ define_gs100exe_hello_rule
 [#DEF :tal_directives TEXT |BODY|OPTIMIZE 0] == Let OCAX optimize
 
 
-?SECTION map_source MACRO
+?SECTION define_source MACRO
 == ------------------------------------------------------------------
 == Map each src subdirectory in the OSS repository to a Guardian
 == intermediate subvolume to hold C-format source files (code 180),
@@ -113,7 +113,7 @@ define_gs100exe_hello_rule
 ]
 
 
-?SECTION define_resources MACRO
+?SECTION define_dependencies MACRO
 == ------------------------------------------------------------------
 == Compilers, linkers, libraries, etc
 == ------------------------------------------------------------------

@@ -49,7 +49,7 @@ BEGIN {
 // {
     switch (section) {
 
-    case "map_source":
+    case "define_source":
         build_source_array()
         break
         
@@ -57,8 +57,8 @@ BEGIN {
         # build_targets_array()
         break
 
-    case "define_resources":
-        # build_resources_array()
+    case "define_dependencies":
+        # build_dependencies_array()
         break
 
     default:
