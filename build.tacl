@@ -13,7 +13,7 @@
 
 define_flags
 define_texts
-define_source
+define_sourcemap
 define_targets
 define_dependencies
 define_defines
@@ -44,7 +44,7 @@ define_params
 [#DEF :tal_directives TEXT |BODY|OPTIMIZE 0] == Let OCAX optimize
 
 
-?SECTION define_source MACRO
+?SECTION define_sourcemap MACRO
 == ------------------------------------------------------------------
 == Map each src subdirectory in the OSS repository to a Guardian
 == intermediate subvolume to hold C-format source files (code 180),
@@ -73,15 +73,15 @@ define_params
 
 [#DEF :gs100obj_hello STRUCT
   BEGIN
-    FNAME name   VALUE $STAT.GS100OBJ.HELLO;
-    FNAME log    VALUE $S.#HELLO.TALOUT;
+    FNAME file   VALUE $STAT.GS100OBJ.HELLO;
+    FNAME logto  VALUE $S.#HELLO.TALOUT;
     FNAME secure VALUE NONE;
     STRUCT dependencies;
       BEGIN
         CHAR d01(0:30) VALUE "gstalsrc_hello";
-        CHAR d02(0:30) VALUE "system_system_tal";
-        CHAR d03(0:30) VALUE "system_system_extdecs1";
-        CHAR d04(0:30) VALUE "system_zsysdefs_zsystal";
+        CHAR d02(0:30) VALUE "system_tal";
+        CHAR d03(0:30) VALUE "system_extdecs1";
+        CHAR d04(0:30) VALUE "zsysdefs_zsystal";
       END;
   END;
 ]
@@ -89,13 +89,13 @@ define_params
 
 [#DEF :gs100exe_hello STRUCT
   BEGIN
-    FNAME name   VALUE $STAT.GS100EXE.HELLO;
-    FNAME log    VALUE $S.#HELLO.OCAXOUT;
-    FNAME secure VALUE $DEV1.GS100EXE.HELLO;
+    FNAME file   VALUE $STAT.GS100EXE.HELLO;
+    FNAME logto  VALUE $S.#HELLO.OCAXOUT;
+    FNAME secure VALUE $DEV1.GSSECURE.HELLO;
     STRUCT dependencies;
       BEGIN
         CHAR d01(0:30) VALUE "gs100obj_hello";
-        CHAR d02(0:30) VALUE "system_system_ocax";
+        CHAR d02(0:30) VALUE "system_ocax";
       END;
   END;
 ]
@@ -103,35 +103,50 @@ define_params
 
 ?SECTION define_dependencies MACRO
 == ------------------------------------------------------------------
-== Compilers, linkers, libraries, etc
+== Edit-format source file, compilers, linkers, libraries, etc
 == ------------------------------------------------------------------
 
-[#DEF :system_system_ctoedit STRUCT
+== Source
+[#DEF :gstalsrc_hello STRUCT
+  BEGIN
+    FNAME f VALUE $STAT.GSTALSRC.HELLO;
+  END;
+]
+
+[#DEF :gstacl_hello STRUCT
+  BEGIN
+    FNAME f VALUE $STAT.GSTACL.HELLO;
+  END;
+]
+
+
+== Build utilities
+[#DEF :system_ctoedit STRUCT
   BEGIN
     FNAME f VALUE $SYSTEM.SYSTEM.CTOEDIT;
   END;
 ]
 
-[#DEF :system_system_extdecs1 STRUCT
+[#DEF :system_extdecs1 STRUCT
   BEGIN
     FNAME f VALUE $SYSTEM.SYSTEM.EXTDECS1;
   END;
 ]
 
 
-[#DEF :system_system_ocax STRUCT
+[#DEF :system_ocax STRUCT
   BEGIN
     FNAME f VALUE $SYSTEM.SYSTEM.OCAX;
   END;
 ]
 
-[#DEF :system_system_tal STRUCT
+[#DEF :system_tal STRUCT
   BEGIN
     FNAME f VALUE $SYSTEM.SYSTEM.TAL;
   END;
 ]
 
-[#DEF :system_zsysdefs_zsystal STRUCT
+[#DEF :zsysdefs_zsystal STRUCT
   BEGIN
     FNAME f VALUE $SYSTEM.ZSYSDEFS.ZSYSTAL;
   END;
@@ -145,9 +160,9 @@ define_params
 == ------------------------------------------------------------------
 
 DELETE DEFINE =EXTDECS1
-ADD DEFINE    =EXTDECS1, CLASS MAP, FILE [:system_system_extdecs1]
+ADD DEFINE    =EXTDECS1, CLASS MAP, FILE [:system_extdecs1]
 DELETE DEFINE =ZSYSTAL
-ADD DEFINE    =ZSYSTAL, CLASS MAP, FILE [:system_zsysdefs_zsystal]
+ADD DEFINE    =ZSYSTAL, CLASS MAP, FILE [:zsysdefs_zsystal]
 
 
 ?SECTION define_assigns MACRO
@@ -174,7 +189,7 @@ PARAM SUMMAT [:flags:true]
 == AWK doesn't need to read this section.
 == ------------------------------------------------------------------
 
-RUN [:system_system_tal]/IN [:gstalsrc_hello:name], &
+RUN [:system_tal]/IN [:gstalsrc_hello:name], &
   OUT [:gs100obj_hello:name], TERM $ZHOME/ &
   [gs100obj_hello:name]; [:tal_directives]
 
@@ -185,7 +200,7 @@ RUN [:system_system_tal]/IN [:gstalsrc_hello:name], &
 == AWK doesn't need to read this section.
 == ------------------------------------------------------------------
 
-RUN [:system_system_ocax]/OUT [:gs100exe_hello:log], &
+RUN [:system_ocax]/OUT [:gs100exe_hello:log], &
   TERM $ZHOME/ [:gs100obj_hello:name] &
   output_file [:gs100exe_hello:name]
 

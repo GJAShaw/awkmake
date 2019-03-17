@@ -26,7 +26,7 @@ function build_dependencies_array(    name, file) {
 
     # Look for a "FNAME f VALUE $VOL.SVOL.FILE;" line...
     if (match($0, /FNAME[[:space:]]+f[[:space:]]+VALUE/) > 0) {
-        file = oss_fname_of(gensub(/;/, "", "g", $4))
+        file = gensub(/;/, "", "g", $4)
         temp_array["file"] = file
     }
    
@@ -42,9 +42,9 @@ function build_dependencies_array(    name, file) {
 
 
 # ------------------------------------------------------------------------------
-# build_source_array
+# build_sourcemap_array
 # ------------------------------------------------------------------------------
-function build_source_array(    dir,sv180,sv101) {
+function build_sourcemap_array(    dir,sv180,sv101) {
 
     # Look for a "[#DEF :dir STRUCT" line...
     if (match($0, /#DEF[[:space:]]+:?[[:alpha:]][[:alnum:]]{0,7}[[:space:]]\
@@ -56,25 +56,70 @@ function build_source_array(    dir,sv180,sv101) {
 
     # Look for a "SUBVOL sv180 VALUE $VOL.SVOL;" line...
     if (match($0, /SUBVOL[[:space:]]+sv180[[:space:]]+VALUE/) > 0) {
-        sv180 = oss_subvol_of(gensub(/;/, "", "g", $4))
+        sv180 = gensub(/;/, "", "g", $4)
         temp_array["sv180"] = sv180
     }
     
     # Look for a "SUBVOL sv101 VALUE $VOL.SVOL;" line...
     if (match($0, /SUBVOL[[:space:]]+sv101[[:space:]]+VALUE/) > 0) {
-        sv101 = oss_subvol_of(gensub(/;/, "", "g", $4))
+        sv101 = gensub(/;/, "", "g", $4)
         temp_array["sv101"] = sv101 
     }
-    
-    # If we've got all three quantities, put them into source_array
+
+    # If we've got all three quantities, put them into sourcemap_array
     if (length(temp_array) == 3) {
         for (label in temp_array) {
-            source_array[temp_array["dir"]][label] = temp_array[label]
+            sourcemap_array[temp_array["dir"]][label] = temp_array[label]
         }
         delete temp_array
     }
 
 }
+
+
+# ------------------------------------------------------------------------------
+# build_targets_array
+# ------------------------------------------------------------------------------
+function build_targets_array(    name,file,logto,secure,dlabel,dname) {
+
+    # Look for a "[#DEF :target STRUCT" line...
+    if (match($0, /#DEF[[:space:]]+:?[[:alpha:]][_[:alnum:]]*[[:space:]]+\
++STRUCT/) > 0) { # regex must continue in first column
+        $0 = substr($0, RSTART, RLENGTH)
+        name = gensub(/:/, "", "g", $2)
+        temp_array["name"] = name
+    }
+
+    # Look for a "FNAME xxxx VALUE $VOL.SVOL.FILE;" line...
+    # xxxx could be file, logto or secure
+    if (match($0, /FNAME[[:space:]]+[[:alpha:]]+[[:space:]]+VALUE/) > 0) {
+        temp_array[$2] = gensub(/;/, "", "g", $4)
+    }
+   
+    # Look for a "STRUCT dependencies;" line...
+    if (match($0, /STRUCT[[:space:]]+dependencies[[:space:]]*;/) > 0) {
+        want_dependencies = 1
+    }
+
+    # Look for a 'CHAR d01(0:30) VALUE "gstalsrc_hello";' line...
+    if (match($0, /CHAR[[:space:]]+[[:alnum:]]+\(0:30\)[[:space:]]+\
+VALUE/) > 0) { # regex must continue in first column
+        dlabel = gensub(/(.+)\(.+/, "\\1", "g" $2)
+        dname  = gensub(/[;\"]/, "", "g", $4)
+        temp_array[dlabel] = dname
+    }
+
+    # Look for "END;", after we started getting dependencies
+    if (match($0, /^[[:space:]]+END[[:space:]]*;/) > 0 && want_dependencies) {
+        for (label in temp_array) {
+            targets_array[temp_array["name"]][label] = temp_array[label]
+        }
+        delete temp_array   
+        want_dependencies = 0
+    }
+
+}
+
 
 # ------------------------------------------------------------------------------
 # guardian_fname_of

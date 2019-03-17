@@ -15,6 +15,8 @@ BEGIN {
     
     # 'delete' reserves these variable names for arrays
     delete source_array
+    delete targets_array
+    delete dependencies_array
     
 }
 
@@ -49,12 +51,12 @@ BEGIN {
 // {
     switch (section) {
 
-    case "define_source":
-        build_source_array()
+    case "define_sourcemap":
+        build_sourcemap_array()
         break
         
     case "define_targets":
-        # build_targets_array()
+        build_targets_array()
         break
 
     case "define_dependencies":
@@ -79,26 +81,15 @@ END {
     print "# ---------------------------------------------"
     print ""
 
-    # print rules
-#    for (i in targets_array) {
-#    
-#        # ****TODO remove whitespace from the target_dependency_text
-#        tgt_deps = dependencies_array[targets_array[i]["target_dependency_taclvar"]]["target_dependency_text"]
-#        gsub(/^[[:space:]]*$/, "", tgt_deps) # remove empty lines - DOESN'T WORK
-#        gsub(/^[[:space:]]*/, "", tgt_deps) # remove leading whitespace - ONLY CATCHES FIRST LINE
-#        print tgt_deps
-#        print "\t@echo 'Building $@, logging to $" targets_array[i]["target_log"] "...'"
-#        print "\t@$(call TACL," targets_array[i]["target_recipe_taclvar"] ")"
-#        print "\n"
-#
-#    }
+    # ****TODO print build.mk
+
 
     # ****TODO Once development is over, don't print the array contents!    
     print ""
-    print "source_array:"
-    for (i in source_array) {
-        for (j in source_array[i])
-            printf("%s ", source_array[i][j])
+    print "sourcemap_array:"
+    for (i in sourcemap_array) {
+        for (j in sourcemap_array[i])
+            printf("%s ", sourcemap_array[i][j])
         print ""
     }
 
@@ -107,6 +98,14 @@ END {
     for (i in dependencies_array) {
         for (j in dependencies_array[i])
             printf("%s ", dependencies_array[i][j])
+        print ""
+    }
+
+    print ""
+    print "targets_array:"
+    for (i in targets_array) {
+        for (j in targets_array[i])
+            printf("%s ", targets_array[i][j])
         print ""
     }
     
