@@ -58,7 +58,7 @@ BEGIN {
         break
 
     case "define_dependencies":
-        # build_dependencies_array()
+        build_dependencies_array()
         break
 
     default:
@@ -99,6 +99,14 @@ END {
     for (i in source_array) {
         for (j in source_array[i])
             printf("%s ", source_array[i][j])
+        print ""
+    }
+
+    print ""
+    print "dependencies_array:"
+    for (i in dependencies_array) {
+        for (j in dependencies_array[i])
+            printf("%s ", dependencies_array[i][j])
         print ""
     }
     

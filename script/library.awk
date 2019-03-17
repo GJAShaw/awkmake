@@ -12,6 +12,36 @@ BEGIN {
 }
 
 # ------------------------------------------------------------------------------
+# build_dependencies_array
+# ------------------------------------------------------------------------------
+function build_dependencies_array(    name, file) {
+
+    # Look for a "[#DEF :dep_name STRUCT" line...
+    if (match($0, /#DEF[[:space:]]+:?[[:alpha:]][_[:alnum:]]*[[:space:]]\
++STRUCT/) > 0) { # regex must continue in first column
+        $0 = substr($0, RSTART, RLENGTH)
+        name = gensub(/:/, "", "g", $2)
+        temp_array["name"] = name
+    }
+
+    # Look for a "FNAME f VALUE $VOL.SVOL.FILE;" line...
+    if (match($0, /FNAME[[:space:]]+f[[:space:]]+VALUE/) > 0) {
+        file = oss_fname_of(gensub(/;/, "", "g", $4))
+        temp_array["file"] = file
+    }
+   
+    # If we've got both quantities, put them into dependencies_array
+    if (length(temp_array) == 2) {
+        for (label in temp_array) {
+            dependencies_array[temp_array["name"]][label] = temp_array[label]
+        }
+        delete temp_array
+    }
+
+}
+
+
+# ------------------------------------------------------------------------------
 # build_source_array
 # ------------------------------------------------------------------------------
 function build_source_array(    dir,sv180,sv101) {
@@ -27,7 +57,7 @@ function build_source_array(    dir,sv180,sv101) {
     # Look for a "SUBVOL sv180 VALUE $VOL.SVOL;" line...
     if (match($0, /SUBVOL[[:space:]]+sv180[[:space:]]+VALUE/) > 0) {
         sv180 = oss_subvol_of(gensub(/;/, "", "g", $4))
-        temp_array["sV180"] = sv180
+        temp_array["sv180"] = sv180
     }
     
     # Look for a "SUBVOL sv101 VALUE $VOL.SVOL;" line...
