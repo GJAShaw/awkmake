@@ -171,6 +171,7 @@ PARAM SUMMAT [:flags:true]
 ?SECTION gs100obj_hello_recipe MACRO
 == ------------------------------------------------------------------
 == Comments go here
+== AWK doesn't need to read this section.
 == ------------------------------------------------------------------
 
 RUN [:system_system_tal]/IN [:gstalsrc_hello:name], &
@@ -181,6 +182,7 @@ RUN [:system_system_tal]/IN [:gstalsrc_hello:name], &
 ?SECTION gs100exe_hello_recipe MACRO
 == ------------------------------------------------------------------
 == Comments go here
+== AWK doesn't need to read this section.
 == ------------------------------------------------------------------
 
 RUN [:system_system_ocax]/OUT [:gs100exe_hello:log], &
