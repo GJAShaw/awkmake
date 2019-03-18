@@ -83,7 +83,9 @@ END {
 
     print "# files"
     for (row in dependencies_array) {
-        printf("%s %s %s\n",dependencies_array[row]["name"],":=", oss_fname_of(dependencies_array[row]["file"]))
+        printf("%s %s %s\n", dependencies_array[row]["name"],\
+            ":=", oss_fname_of(dependencies_array[row]["file"])\
+        )
     }
     print ""
     
