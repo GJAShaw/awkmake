@@ -81,7 +81,20 @@ END {
     print "# ---------------------------------------------"
     print ""
 
-    # ****TODO print build.mk
+    print "# files"
+    for (row in dependencies_array) {
+        printf("%s %s %s\n",dependencies_array[row]["name"],":=", oss_fname_of(dependencies_array[row]["file"]))
+    }
+    print ""
+    
+#    print "# subvolume for code 180 intermediate source files"
+#    for (dir in sourcemap_array) {
+#        print name " := " oss_fname_of(dependencies_array[name])
+#    }
+    
+    
+    
+    # ****TODO print rest of build.mk
 
 
     # ****TODO Once development is over, don't print the array contents!    
