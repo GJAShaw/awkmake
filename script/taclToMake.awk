@@ -73,21 +73,85 @@ BEGIN {
 # ---
 END {
 
-    print "# ---------------------------------------------"
+    print "# ------------------------------------------------------------------"
     print "# file: build.mk"
     print "# type: GNU Make file"
-    print "# **** This file was programatically written by"
-    print "# **** GAWK, from the contents of build.tacl"
-    print "# ---------------------------------------------"
+    print "# **** This file was programatically written by GAWK, from the"
+    print "# **** contents of build.tacl"
+    print "# ------------------------------------------------------------------"
+    print "\n"
+    
+    print "# ------------------------------------------------------------------"
+    print "# variables"
+    print "# ------------------------------------------------------------------"
+    print ""
+    
+    print "# --------------------------------"
+    print "# command aliases"
+    print "# --------------------------------"
+    print "RM := rm -Rf"
     print ""
 
-    print "# files"
+    print "# --------------------------------"
+    print "# source and dependency files"
+    print "# --------------------------------"
     for (row in dependencies_array) {
-        printf("%s %s %s\n", dependencies_array[row]["name"],\
+        dep_name = dependencies_array[row]["name"]
+        printf("%s %s %s\n", dep_name,\
             ":=", oss_fname_of(dependencies_array[row]["file"])\
         )
     }
     print ""
+    
+    print "# --------------------------------"
+    print "# targets - intermediate and final"
+    print "# --------------------------------"
+    for (row in targets_array) {
+        tgt_name = targets_array[row]["name"]
+        printf("%s %s %s\n", tgt_name,\
+            ":=", oss_fname_of(targets_array[row]["file"])\
+        )
+        clean_array[tgt_name] = tgt_name
+        
+        sec_name = targets_array[row]["name"] "_secure"
+        printf("%s %s %s\n", sec_name,\
+            ":=", oss_fname_of(targets_array[row]["secure"])\
+        )
+        # Don't add the secure name to clean_array!
+    }
+    print ""
+    print "# --------------------------------"    
+    print "# files deleted by 'clean' rule"
+    print "# --------------------------------"
+    print "clean_list :="
+    print "clean_list += \\"
+    for (row in clean_array) {
+        printf("%s%s%s", "  $(", clean_array[row], ")")
+        if (length(clean_array) > 1) {
+            printf("%s", " \\")
+        }
+        print ""
+        delete clean_array[row]
+    }
+    print ""
+    
+    print "# ------------------------------------------------------------------"
+    print "# rules"
+    print "# ------------------------------------------------------------------"
+    print ""
+
+    print "# --------------------------------"
+    print "# clean"
+    print "# --------------------------------"
+    print ".PHONY: clean"
+    print "clean:"
+    print "\t-@$(RM) $(clean_list)"
+    print ""
+
+
+    print "# ------------------------------------------------------------------"
+    print "# EOF"
+    print "# ------------------------------------------------------------------"
     
 #    print "# subvolume for code 180 intermediate source files"
 #    for (dir in sourcemap_array) {
@@ -96,33 +160,30 @@ END {
     
     
     
-    # ****TODO print rest of build.mk
-
-
     # ****TODO Once development is over, don't print the array contents!    
-    print ""
-    print "sourcemap_array:"
-    for (i in sourcemap_array) {
-        for (j in sourcemap_array[i])
-            printf("%s ", sourcemap_array[i][j])
-        print ""
-    }
+#    print ""
+#    print "sourcemap_array:"
+#    for (i in sourcemap_array) {
+#        for (j in sourcemap_array[i])
+#            printf("%s ", sourcemap_array[i][j])
+#        print ""
+#    }
 
-    print ""
-    print "dependencies_array:"
-    for (i in dependencies_array) {
-        for (j in dependencies_array[i])
-            printf("%s ", dependencies_array[i][j])
-        print ""
-    }
+#    print ""
+#    print "dependencies_array:"
+#    for (i in dependencies_array) {
+#        for (j in dependencies_array[i])
+#            printf("%s ", dependencies_array[i][j])
+#        print ""
+#    }
 
-    print ""
-    print "targets_array:"
-    for (i in targets_array) {
-        for (j in targets_array[i])
-            printf("%s ", targets_array[i][j])
-        print ""
-    }
+#    print ""
+#    print "targets_array:"
+#    for (i in targets_array) {
+#        for (j in targets_array[i])
+#            printf("%s ", targets_array[i][j])
+#        print ""
+#    }
     
 }
 
