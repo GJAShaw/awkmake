@@ -13,11 +13,10 @@
 BEGIN {
     IGNORECASE = 1 # gawk feature
     
-    # 'delete' reserves these variable names for arrays
-    delete source_array
+    delete sourcemap_array
     delete targets_array
     delete dependencies_array
-    
+    delete clean_array
 }
 
 # -------------
@@ -25,14 +24,9 @@ BEGIN {
 # -------------
 @include "script/library.awk" # @include is a gawk feature
 
-# -------------
-# Define functions
-# -------------
-
-# (****TODO remove section if none needed)
 
 # -------------
-# Process input
+# Process the input
 # -------------
 
 # Ignore commented-out lines
@@ -111,22 +105,50 @@ END {
         printf("%s %s %s\n", tgt_name,\
             ":=", oss_fname_of(targets_array[row]["file"])\
         )
-        clean_array[tgt_name] = tgt_name
+        clean_array[tgt_name] = "$(" tgt_name ")"
         
         sec_name = targets_array[row]["name"] "_secure"
         printf("%s %s %s\n", sec_name,\
             ":=", oss_fname_of(targets_array[row]["secure"])\
         )
         # Don't add the secure name to clean_array!
+
     }
     print ""
-    print "# --------------------------------"    
-    print "# files deleted by 'clean' rule"
-    print "# --------------------------------"
+  
+    print "# ----------------------------"
+    print "# source subvolumes - C-format"
+    print "# ----------------------------"
+    for (row in sourcemap_array) {
+        dir = sourcemap_array[row]["dir"]
+        dir_sv180 = dir "_sv180" 
+        printf("%s %s %s\n", dir_sv180,\
+            ":=", oss_subvol_of(sourcemap_array[row]["sv180"])\
+        )
+       clean_array[dir_sv180] = "$(" dir_sv180 ")"
+    }
+    print ""
+    
+    print "# -------------------------------"
+    print "# source subvolumes - EDIT-format"
+    print "# -------------------------------"
+    for (row in sourcemap_array) {
+        dir = sourcemap_array[row]["dir"]
+        dir_sv101 = dir "_sv101" 
+        printf("%s %s %s\n", dir_sv101,\
+            ":=", oss_subvol_of(sourcemap_array[row]["sv101"])\
+        )
+       clean_array[dir_sv101] = "$(" dir_sv101 ")"
+    }
+    print ""
+    
+    print "# -----------------------------------------"    
+    print "# files/directories deleted by 'clean' rule"
+    print "# -----------------------------------------"
     print "clean_list :="
     print "clean_list += \\"
     for (row in clean_array) {
-        printf("%s%s%s", "  $(", clean_array[row], ")")
+        printf("%s%s", "  ", clean_array[row])
         if (length(clean_array) > 1) {
             printf("%s", " \\")
         }
@@ -139,6 +161,19 @@ END {
     print "# rules"
     print "# ------------------------------------------------------------------"
     print ""
+
+    print "# ------------------------------------"
+    print "# repository source -> C-format source"
+    print "# ------------------------------------"
+    print ""
+    for (row in sourcemap_array) {
+        dir = sourcemap_array[row]["dir"]
+        sv180 = oss_subvol_of(sourcemap_array[row]["sv180"])
+        print sv180 "/%: src/" dir "/%"
+        print "\t@cp --Wclobber $< $@"
+        print ""
+    }
+
 
     print "# --------------------------------"
     print "# clean"
