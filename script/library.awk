@@ -122,57 +122,18 @@ VALUE/) > 0) { # regex must continue in first column
 
 
 # ------------------------------------------------------------------------------
-# guardian_fname_of
-# returns: Guardian-style filename, e.g. $DEV1.TALSRC.HELLO
-#    The filename returned is not case-shifted.
-# parameter: OSS-style name for a Guardian file, e.g. /G/dev1/talsrc/hello
-#    A partially-qualified ("relative") filename is acceptable.
-#
-# I tried writing this with one gensub() and two sub() calls, but got bogged
-# down in regex failure, so I resorted to an array method.
-# ------------------------------------------------------------------------------
-function guardian_fname_of(oss_fname) {
-
-    # Split sysname, volume, subvolume and filename into an array
-    delete array # ensure no previous version exists
-    array_length = split(guardian_fname, array, "/")
-    
-    # Define an empty string
-    file = ""
-    
-    # Check for system name
-    if (1 in array) {
-        if (array[1] == "E") {
-            if (2 in array) {
-                sysname = array[2]
-                delete array[1]
-                delete array[2]
-            } else {
-                sysname = ""
-            }
-        }
-    }
-    
-    # ****TODO later: finish, rewrite, whatever. I need a break from this.
-    return "workInProgress"
-
-}
-
-# ------------------------------------------------------------------------------
 # oss_fname_of
 # returns: OSS-style name for a Guardian file, e.g. /G/dev1/talsrc/hello
 #    The filename returned is downshifted except for directory names E and G.
 # parameter: Guardian filename, e.g. $DEV1.TALSRC.HELLO
 #    A partially-qualified ("relative") filename is acceptable.
 # ------------------------------------------------------------------------------
-function oss_fname_of(GUARDIAN_FNAME) {
-
-    # Shift filename to lower case
-    guardian_fname = tolower(GUARDIAN_FNAME)
+function oss_fname_of(GUARDIAN_FNAME,    array, array_length, backarray, file,\
+   subvol, volume, sysname, oss_path) {
 
     # Split sysname, volume, subvolume and filename into an array
     delete array # ensure no previous version exists
-    array_length = split(guardian_fname, array, ".")
+    array_length = split(tolower(GUARDIAN_FNAME), array, ".")
     
     # Create backarray, with elements of array reversed
     delete backarray # ensure no previous version exists
@@ -188,9 +149,9 @@ function oss_fname_of(GUARDIAN_FNAME) {
     }
 
     if (2 in backarray) {
-        subvolume = backarray[2]
+        subvol = backarray[2]
     } else {
-        subvolume = ""
+        subvol = ""
     }
 
     if (3 in backarray) { # remove "$" prefix
@@ -231,14 +192,12 @@ function oss_fname_of(GUARDIAN_FNAME) {
 # struggling to see it. There seem to be too many possibilities for the
 # argument string, 
 # ------------------------------------------------------------------------------
-function oss_subvol_of(GUARDIAN_SUBVOL) {
-
-    # Shift filename to lower case
-    guardian_subvol = tolower(GUARDIAN_SUBVOL)
+function oss_subvol_of(GUARDIAN_SUBVOL,    array, array_length, backarray,\
+   subvol, volume, sysname, oss_path) {
 
     # Split sysname, volume, subvolume into an array
     delete array # ensure no previous version exists
-    array_length = split(guardian_subvol, array, ".")
+    array_length = split(tolower(GUARDIAN_SUBVOL), array, ".")
     
     # Create backarray, with elements of array reversed
     delete backarray # ensure no previous version exists

@@ -76,8 +76,8 @@ END {
     print "# ------------------------------------------------------------------"
     print "# file: build.mk"
     print "# type: GNU Make file"
-    print "# **** This file was programatically written by GAWK, from the"
-    print "# **** contents of build.tacl"
+    print "# **** This file was written by GAWK, reading the contents of"
+    print "# **** build.tacl"
     print "# ------------------------------------------------------------------"
     print "\n"
     
