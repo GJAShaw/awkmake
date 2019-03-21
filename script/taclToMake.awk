@@ -157,6 +157,19 @@ END {
     }
     print ""
     
+    print "# --------------------------------------"
+    print "# 'canned recipe' for EDIT-format source"
+    print "# --------------------------------------"
+    print "define ctoedit_recipe ="
+    print "$(RM) $@"
+    print "FILE_180=$$(gname -s $<)"
+    print "FILE_101=$$(gname -s $@)"
+    print "gtacl -c \"CTOEDIT \\$${FILE_180}, \\$${FILE_101}\""
+    print "ls $@"
+    print "exit ($$?)"
+    print "endef"
+    print ""
+    
     print "# ------------------------------------------------------------------"
     print "# rules"
     print "# ------------------------------------------------------------------"
@@ -165,7 +178,6 @@ END {
     print "# ------------------------------------"
     print "# repository source -> C-format source"
     print "# ------------------------------------"
-    print ""
     for (row in sourcemap_array) {
         dir = sourcemap_array[row]["dir"]
         sv180 = oss_subvol_of(sourcemap_array[row]["sv180"])
@@ -174,6 +186,16 @@ END {
         print ""
     }
 
+    print "# -------------------------------------"
+    print "# C-format source -> EDIT-format source"
+    print "# -------------------------------------"
+    for (row in sourcemap_array) {
+        sv180 = oss_subvol_of(sourcemap_array[row]["sv180"])
+        sv101 = oss_subvol_of(sourcemap_array[row]["sv101"])
+        print sv101 "/%: " sv180 "/%"
+        print "\t@$(ctoedit_recipe)"
+        print ""
+    }
 
     print "# --------------------------------"
     print "# clean"
@@ -188,12 +210,8 @@ END {
     print "# EOF"
     print "# ------------------------------------------------------------------"
     
-#    print "# subvolume for code 180 intermediate source files"
-#    for (dir in sourcemap_array) {
-#        print name " := " oss_fname_of(dependencies_array[name])
-#    }
-    
-    
+
+   
     
     # ****TODO Once development is over, don't print the array contents!    
 #    print ""
