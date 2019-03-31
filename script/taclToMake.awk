@@ -146,9 +146,9 @@ END {
     for (row in targets_array) {
         delete temp_array
         tgt_name = targets_array[row]["name"]
-        sec_name = targets_array[row]["secure"]
-        if (match(secure, /^NONE$/) == 0) {
-            temp_array["secure"] = sec_name
+        sec_fname = targets_array[row]["secure"]
+        if (match(sec_fname, /^NONE$/) == 0) {
+            temp_array["secure"] = name "_secure"
             temp_array["name"] = name
             for (label in temp_array) {
                 secure_array[temp_array["secure"]][label] = temp_array[label]
