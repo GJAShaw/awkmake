@@ -97,9 +97,9 @@ END {
     }
     print ""
     
-    print "# --------------------------------"
-    print "# targets - intermediate and final"
-    print "# --------------------------------"
+    print "# --------------------------------------"
+    print "# targets - intermediate and deliverable"
+    print "# --------------------------------------"
     for (row in targets_array) {
         tgt_name = targets_array[row]["name"]
         printf("%s %s %s\n", tgt_name,\
@@ -115,7 +115,29 @@ END {
 
     }
     print ""
-  
+
+    print "# ------------"    
+    print "# deliverables"
+    print "# ------------"
+    for (row in targets_array) {
+        tgt_name = targets_array[row]["name"]
+        deliverable = targets_array[row]["deliverable"]
+        if (match(deliverable, /Y/) > 0) {
+            deliverables_array[tgt_name] = tgt_name
+        }
+    }
+    print "deliverables_list :="
+    print "deliverables_list += \\"
+    for (name in deliverables_array) {
+        printf("%s%s%s%s", "  ", "$(", deliverables_array[name], ")")
+        if (length(deliverables_array) > 1) {
+            printf("%s", " \\")
+        }
+        print ""
+        delete deliverables_array[name]
+    } 
+    print ""
+    
     print "# ----------------------------"
     print "# source subvolumes - C-format"
     print "# ----------------------------"
@@ -175,6 +197,13 @@ END {
     print "# ------------------------------------------------------------------"
     print ""
 
+    print "# --------------------------------"
+    print "# all == deliverables"
+    print "# --------------------------------"
+    print ".PHONY: all"
+    print "all: $(deliverables_list)"
+    print ""
+
     print "# ------------------------------------"
     print "# repository source -> C-format source"
     print "# ------------------------------------"
@@ -194,6 +223,43 @@ END {
         sv101 = oss_subvol_of(sourcemap_array[row]["sv101"])
         print sv101 "/%: " sv180 "/%"
         print "\t@$(ctoedit_recipe)"
+        print ""
+    }
+    
+    print "# -------------------------------------"
+    print "# Individual target rules"
+    print "# -------------------------------------"
+    for (row in targets_array) {
+        name = targets_array[row]["name"]
+        delete targets_array[row]["name"]
+        file = targets_array[row]["file"]
+        delete targets_array[row]["file"]
+        logto = targets_array[row]["logto"]
+        delete targets_array[row]["logto"]
+        delete targets_array[row]["secure"]
+        delete targets_array[row]["deliverable"]
+        # Everything except dependencies has now been deleted from the row
+        print ".PHONY: " name
+        print name ": $(" name ")" 
+        print "$(" name "): \\"
+        dependencies_per_line = 4
+        i = 1
+        for (label in targets_array[row]) {
+            printf("%s%s%s", "$(", targets_array[row][label], ") ")
+            if (length(targets_array[row]) == 1) { # last element
+                print ""
+            } else {
+                if (i == (dependencies_per_line)) {
+                    print "\\"
+                    i = 1
+                } else {
+                    i++
+                }
+            }
+            delete targets_array[row][label]
+        }
+        print "\t@echo Building \\$" file ", logging to \\$" logto "..."
+        print "\t@gtacl -c '" name "_recipe'"
         print ""
     }
 

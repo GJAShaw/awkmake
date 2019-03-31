@@ -90,6 +90,12 @@ function build_targets_array(    name,file,logto,secure,dlabel,dname) {
         temp_array["name"] = name
     }
 
+    # Look for a "CHAR deliverable" line...
+    if (match($0, /CHAR[[:space:]]+deliverable[[:space:]]+VALUE/) > 0) {
+        deliverable = gensub(/[";]/, "", "g", $4)
+        temp_array["deliverable"] = deliverable
+    }
+
     # Look for a "FNAME xxxx VALUE $VOL.SVOL.FILE;" line...
     # xxxx could be file, logto or secure
     if (match($0, /FNAME[[:space:]]+[[:alpha:]]+[[:space:]]+VALUE/) > 0) {
@@ -120,7 +126,7 @@ VALUE/) > 0) { # regex must continue in first column
 
 }
 
-
+                        
 # ------------------------------------------------------------------------------
 # oss_fname_of
 # returns: OSS-style name for a Guardian file, e.g. /G/dev1/talsrc/hello
@@ -129,14 +135,12 @@ VALUE/) > 0) { # regex must continue in first column
 #    A partially-qualified ("relative") filename is acceptable.
 # ------------------------------------------------------------------------------
 function oss_fname_of(GUARDIAN_FNAME,    array, array_length, backarray, file,\
-   subvol, volume, sysname, oss_path) {
+   subvolume, volume, sysname, oss_path) {
 
     # Split sysname, volume, subvolume and filename into an array
-    delete array # ensure no previous version exists
     array_length = split(tolower(GUARDIAN_FNAME), array, ".")
     
     # Create backarray, with elements of array reversed
-    delete backarray # ensure no previous version exists
     for (i in array) {
         backarray[i] = array[(array_length - i) + 1]
     }
@@ -149,9 +153,9 @@ function oss_fname_of(GUARDIAN_FNAME,    array, array_length, backarray, file,\
     }
 
     if (2 in backarray) {
-        subvol = backarray[2]
+        subvolume = backarray[2]
     } else {
-        subvol = ""
+        subvolume = ""
     }
 
     if (3 in backarray) { # remove "$" prefix

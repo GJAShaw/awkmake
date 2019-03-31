@@ -73,6 +73,7 @@ define_params
 
 [#DEF :gs100obj_hello STRUCT
   BEGIN
+    CHAR deliverable VALUE "N";
     FNAME file   VALUE $STAT.GS100OBJ.HELLO;
     FNAME logto  VALUE $S.#HELLO.TALOUT;
     FNAME secure VALUE NONE;
@@ -80,8 +81,9 @@ define_params
       BEGIN
         CHAR d01(0:30) VALUE "gstalsrc_hello";
         CHAR d02(0:30) VALUE "system_tal";
-        CHAR d03(0:30) VALUE "system_extdecs1";
-        CHAR d04(0:30) VALUE "zsysdefs_zsystal";
+        CHAR d03(0:30) VALUE "system_extdecs0";
+        CHAR d04(0:30) VALUE "zguard_derror";
+        CHAR d05(0:30) VALUE "zsysdefs_zsystal";
       END;
   END;
 ]
@@ -89,6 +91,7 @@ define_params
 
 [#DEF :gs100exe_hello STRUCT
   BEGIN
+    CHAR deliverable VALUE "Y";
     FNAME file   VALUE $STAT.GS100EXE.HELLO;
     FNAME logto  VALUE $S.#HELLO.OCAXOUT;
     FNAME secure VALUE $DEV1.GSSECURE.HELLO;
@@ -127,9 +130,9 @@ define_params
   END;
 ]
 
-[#DEF :system_extdecs1 STRUCT
+[#DEF :system_extdecs0 STRUCT
   BEGIN
-    FNAME f VALUE $SYSTEM.SYSTEM.EXTDECS1;
+    FNAME f VALUE $SYSTEM.SYSTEM.EXTDECS0;
   END;
 ]
 
@@ -142,6 +145,12 @@ define_params
 [#DEF :system_tal STRUCT
   BEGIN
     FNAME f VALUE $SYSTEM.SYSTEM.TAL;
+  END;
+]
+
+[#DEF :zguard_derror STRUCT
+  BEGIN
+    FNAME f VALUE $SYSTEM.ZGUARD.DERROR;
   END;
 ]
 
@@ -158,6 +167,8 @@ define_params
 == AWK doesn't need to read this section.
 == ------------------------------------------------------------------
 
+DELETE DEFINE =DERROR
+ADD DEFINE    =DERROR, CLASS MAP, FILE [:zguard_derror]
 DELETE DEFINE =EXTDECS1
 ADD DEFINE    =EXTDECS1, CLASS MAP, FILE [:system_extdecs1]
 DELETE DEFINE =ZSYSTAL
