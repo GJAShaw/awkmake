@@ -264,7 +264,7 @@ END {
     }
     
     print "# -------------------------------------"
-    print "# Individual target rules"
+    print "# individual target rules"
     print "# -------------------------------------"
     for (row in targets_array) {
         name = targets_array[row]["name"]
