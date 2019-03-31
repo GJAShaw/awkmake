@@ -13,10 +13,13 @@
 BEGIN {
     IGNORECASE = 1 # gawk feature
     
+    delete clean_array
+    delete deliverables_array
+    delete dependencies_array
+    delete secure_array
     delete sourcemap_array
     delete targets_array
-    delete dependencies_array
-    delete clean_array
+    delete temp_array
 }
 
 # -------------
@@ -111,8 +114,7 @@ END {
         printf("%s %s %s\n", sec_name,\
             ":=", oss_fname_of(targets_array[row]["secure"])\
         )
-        # Don't add the secure name to clean_array!
-
+        # Don't add the secure name to clean_array
     }
     print ""
 
@@ -137,7 +139,34 @@ END {
         delete deliverables_array[name]
     } 
     print ""
-    
+
+    print "# ------------------------"
+    print "# secure object repository"
+    print "# ------------------------"
+    for (row in targets_array) {
+        delete temp_array
+        tgt_name = targets_array[row]["name"]
+        sec_name = targets_array[row]["secure"]
+        if (match(secure, /^NONE$/) == 0) {
+            temp_array["secure"] = sec_name
+            temp_array["name"] = name
+            for (label in temp_array) {
+                secure_array[temp_array["secure"]][label] = temp_array[label]
+            }
+        }
+    }
+    print "secure_object_list :="
+    print "secure_object_list += \\"
+    for (row in secure_array) {
+        printf("%s%s%s%s", "  ", "$(", secure_array[row]["secure"], ")")
+        if (length(secure_array) > 1) {
+            printf("%s", " \\")
+        }
+        print ""
+        delete deliverables_array[name]
+    } 
+    print ""
+
     print "# ----------------------------"
     print "# source subvolumes - C-format"
     print "# ----------------------------"
