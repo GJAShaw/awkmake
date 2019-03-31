@@ -29,7 +29,7 @@ define_params
 
 [#DEF :flags STRUCT
   BEGIN
-    BOOL false VALUE 0;
+    BOOL false VALUE  0;
     BOOL true  VALUE -1;
   END;
 ]
@@ -169,8 +169,8 @@ define_params
 
 DELETE DEFINE =DERROR
 ADD DEFINE    =DERROR, CLASS MAP, FILE [:zguard_derror]
-DELETE DEFINE =EXTDECS1
-ADD DEFINE    =EXTDECS1, CLASS MAP, FILE [:system_extdecs1]
+DELETE DEFINE =EXTDECS0
+ADD DEFINE    =EXTDECS0, CLASS MAP, FILE [:system_extdecs0]
 DELETE DEFINE =ZSYSTAL
 ADD DEFINE    =ZSYSTAL, CLASS MAP, FILE [:zsysdefs_zsystal]
 
