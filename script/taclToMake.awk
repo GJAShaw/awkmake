@@ -150,6 +150,7 @@ END {
         if (match(sec_fname, /^NONE$/) == 0) {
             temp_array["secure"] = name "_secure"
             temp_array["name"] = name
+            temp_array["sec_fname"] = sec_fname
             for (label in temp_array) {
                 secure_array[temp_array["secure"]][label] = temp_array[label]
             }
@@ -226,11 +227,18 @@ END {
     print "# ------------------------------------------------------------------"
     print ""
 
-    print "# --------------------------------"
+    print "# -------------------"
     print "# all == deliverables"
-    print "# --------------------------------"
+    print "# -------------------"
     print ".PHONY: all"
     print "all: $(deliverables_list)"
+    print ""
+
+    print "# -------------------------------"
+    print "# update secure object repository"
+    print "# -------------------------------"
+    print ".PHONY: secure"
+    print "secure: $(secure_object_list)"
     print ""
 
     print "# ------------------------------------"
@@ -287,8 +295,21 @@ END {
             }
             delete targets_array[row][label]
         }
-        print "\t@echo Building \\$" file ", logging to \\$" logto "..."
+        print "\t@echo Building \\$" file ", logging to \\$" logto
         print "\t@gtacl -c '" name "_recipe'"
+        print ""
+    }
+
+    print "# -------------------------------------"
+    print "# secure object repository update rules"
+    print "# -------------------------------------"
+    for (row in secure_array) {
+        secure = secure_array[row]["secure"]
+        name = secure_array[row]["name"]
+        sec_fname = secure_array[row]["sec_fname"]
+        print "$(" secure "):  $(" name ")"
+        print "\t@echo Updating secure object \\$" sec_fname
+        print "\t@cp --Wclobber $< $@"
         print ""
     }
 
@@ -304,35 +325,7 @@ END {
     print "# ------------------------------------------------------------------"
     print "# EOF"
     print "# ------------------------------------------------------------------"
-    
 
-   
-    
-    # ****TODO Once development is over, don't print the array contents!    
-#    print ""
-#    print "sourcemap_array:"
-#    for (i in sourcemap_array) {
-#        for (j in sourcemap_array[i])
-#            printf("%s ", sourcemap_array[i][j])
-#        print ""
-#    }
-
-#    print ""
-#    print "dependencies_array:"
-#    for (i in dependencies_array) {
-#        for (j in dependencies_array[i])
-#            printf("%s ", dependencies_array[i][j])
-#        print ""
-#    }
-
-#    print ""
-#    print "targets_array:"
-#    for (i in targets_array) {
-#        for (j in targets_array[i])
-#            printf("%s ", targets_array[i][j])
-#        print ""
-#    }
-    
 }
 
 # ------------------------------------------------------------------------------
