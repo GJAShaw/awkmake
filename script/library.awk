@@ -44,7 +44,7 @@ function build_dependencies_array(    name, file) {
 # ------------------------------------------------------------------------------
 # build_sourcemap_array
 # ------------------------------------------------------------------------------
-function build_sourcemap_array(    dir,sv180,sv101) {
+function build_sourcemap_array(    dir, sv180, sv101) {
 
     # Look for a "[#DEF :dir STRUCT" line...
     if (match($0, /#DEF[[:space:]]+:?[[:alpha:]][[:alnum:]]{0,7}[[:space:]]\
@@ -78,9 +78,9 @@ function build_sourcemap_array(    dir,sv180,sv101) {
 
 
 # ------------------------------------------------------------------------------
-# build_targets_array
+# build_targets_arrays
 # ------------------------------------------------------------------------------
-function build_targets_array(    name,file,logto,secure,dlabel,dname) {
+function build_targets_arrays(    name, secure, dlabel, dname) {
 
     # Look for a "[#DEF :target STRUCT" line...
     if (match($0, /#DEF[[:space:]]+:?[[:alpha:]][_[:alnum:]]*[[:space:]]+\
@@ -99,7 +99,25 @@ function build_targets_array(    name,file,logto,secure,dlabel,dname) {
     # Look for a "FNAME xxxx VALUE $VOL.SVOL.FILE;" line...
     # xxxx could be file, logto or secure
     if (match($0, /FNAME[[:space:]]+[[:alpha:]]+[[:space:]]+VALUE/) > 0) {
-        temp_array[$2] = gensub(/;/, "", "g", $4)
+    
+        switch ($2) {
+        
+            case "file":
+            case "logto":
+                temp_array[$2] = gensub(/;/, "", "g", $4)
+                break
+            
+            case "secure":
+                secure = gensub(/;/, "", "g", $4)
+                if (match(secure, /^NONE$/) == 0) {
+                    secure_array[temp_array["name"]] = secure
+                }
+                break
+                
+            # no default case
+        }
+        
+        
     }
    
     # Look for a "STRUCT dependencies;" line...
@@ -120,8 +138,8 @@ VALUE/) > 0) { # regex must continue in first column
         for (label in temp_array) {
             targets_array[temp_array["name"]][label] = temp_array[label]
         }
-        delete temp_array   
         want_dependencies = 0
+        delete temp_array
     }
 
 }

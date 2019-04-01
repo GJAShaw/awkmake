@@ -53,7 +53,7 @@ BEGIN {
         break
         
     case "define_targets":
-        build_targets_array()
+        build_targets_arrays()
         break
 
     case "define_dependencies":
@@ -109,12 +109,6 @@ END {
             ":=", oss_fname_of(targets_array[row]["file"])\
         )
         clean_array[tgt_name] = "$(" tgt_name ")"
-        
-        sec_name = targets_array[row]["name"] "_secure"
-        printf("%s %s %s\n", sec_name,\
-            ":=", oss_fname_of(targets_array[row]["secure"])\
-        )
-        # Don't add the secure name to clean_array
     }
     print ""
 
@@ -143,28 +137,18 @@ END {
     print "# ------------------------"
     print "# secure object repository"
     print "# ------------------------"
-    for (row in targets_array) {
-        delete temp_array
-        tgt_name = targets_array[row]["name"]
-        sec_fname = targets_array[row]["secure"]
-        if (match(sec_fname, /^NONE$/) == 0) {
-            temp_array["secure"] = name "_secure"
-            temp_array["name"] = name
-            temp_array["sec_fname"] = sec_fname
-            for (label in temp_array) {
-                secure_array[temp_array["secure"]][label] = temp_array[label]
-            }
-        }
+    for (name in secure_array) {
+        print name "_securecopy := " oss_fname_of(secure_array[name])
     }
+    print ""
     print "secure_object_list :="
     print "secure_object_list += \\"
-    for (row in secure_array) {
-        printf("%s%s%s%s", "  ", "$(", secure_array[row]["secure"], ")")
+    for (name in secure_array) {
+        printf("%s%s%s%s", "  ", "$(", name, "_securecopy)")
         if (length(secure_array) > 1) {
             printf("%s", " \\")
         }
         print ""
-        delete deliverables_array[name]
     } 
     print ""
 
@@ -303,12 +287,9 @@ END {
     print "# -------------------------------------"
     print "# secure object repository update rules"
     print "# -------------------------------------"
-    for (row in secure_array) {
-        secure = secure_array[row]["secure"]
-        name = secure_array[row]["name"]
-        sec_fname = secure_array[row]["sec_fname"]
-        print "$(" secure "):  $(" name ")"
-        print "\t@echo Updating secure object \\$" sec_fname
+    for (name in secure_array) {
+        print "$(" name "_securecopy):  $(" name ")"
+        print "\t@echo Updating secure object \\$" secure_array[name]
         print "\t@cp --Wclobber $< $@"
         print ""
     }
