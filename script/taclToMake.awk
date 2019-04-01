@@ -257,7 +257,6 @@ END {
         delete targets_array[row]["file"]
         logto = targets_array[row]["logto"]
         delete targets_array[row]["logto"]
-        delete targets_array[row]["secure"]
         delete targets_array[row]["deliverable"]
         # Everything except dependencies has now been deleted from the row
         print ".PHONY: " name
