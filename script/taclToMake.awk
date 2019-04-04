@@ -12,7 +12,7 @@
 # ----
 BEGIN {
     IGNORECASE = 1 # gawk feature
-    
+    delete buildtacl_array
     delete clean_array
     delete deliverables_array
     delete dependencies_array
@@ -48,6 +48,10 @@ BEGIN {
 // {
     switch (section) {
 
+    case "define_buildtacl":
+        build_buildtacl_array()
+        break
+        
     case "define_sourcemap":
         build_sourcemap_array()
         break
@@ -89,9 +93,18 @@ END {
     print "RM := rm -Rf"
     print ""
 
-    print "# --------------------------------"
+    print "# ---------------"
+    print "# build TACL file"
+    print "# ---------------"
+    print "build_tacl_code180 := " oss_fname_of(buildtacl_array["bt180"])
+    print "build_tacl_code101 := " oss_fname_of(buildtacl_array["bt101"])
+    print ""
+    clean_array["build_tacl_code180"] = "$(build_tacl_code180)"
+    clean_array["build_tacl_code101"] = "$(build_tacl_code101)"
+    
+    print "# ---------------------------"
     print "# source and dependency files"
-    print "# --------------------------------"
+    print "# ---------------------------"
     for (row in dependencies_array) {
         dep_name = dependencies_array[row]["name"]
         printf("%s %s %s\n", dep_name,\
@@ -225,6 +238,20 @@ END {
     print "secure: $(secure_object_list)"
     print ""
 
+    print "# --------------------------------------------"
+    print "# repository build.tacl -> C-format build TACL"
+    print "# --------------------------------------------"
+    print "$(build_tacl_code180): build.tacl"
+    print "\t@cp --Wclobber $< $@"
+    print ""
+
+    print "# ---------------------------------------------"
+    print "# C-format build TACL -> EDIT-format build TACL"
+    print "# ---------------------------------------------"
+    print "$(build_tacl_code101): $(build_tacl_code180)"
+    print "\t@$(ctoedit_recipe)"
+    print ""
+
     print "# ------------------------------------"
     print "# repository source -> C-format source"
     print "# ------------------------------------"
@@ -261,7 +288,7 @@ END {
         # Everything except dependencies has now been deleted from the row
         print ".PHONY: " name
         print name ": $(" name ")" 
-        print "$(" name "): \\"
+        print "$(" name "): $(build_tacl_code101) \\"
         dependencies_per_line = 4
         i = 1
         for (label in targets_array[row]) {
