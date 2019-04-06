@@ -5,7 +5,7 @@
 == ------------------------------------------------------------------
 
 
-?SECTION define_everything MACRO
+?SECTION define_all MACRO
 == ------------------------------------------------------------------
 == Comments go here
 == AWK doesn't need to read this section.
