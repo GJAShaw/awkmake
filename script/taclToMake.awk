@@ -87,9 +87,16 @@ END {
     print "# ------------------------------------------------------------------"
     print ""
     
-    print "# --------------------------------"
+    print "# ----------------"
+    print "# shell properties"
+    print "# ----------------"
+    print "SHELL = /bin/sh"
+    print ".SHELLFLAGS = -ec"
+    print ""
+
+    print "# ---------------"
     print "# command aliases"
-    print "# --------------------------------"
+    print "# ---------------"
     print "RM := rm -Rf"
     print ""
 
@@ -245,6 +252,20 @@ END {
     print "# -------------------------------"
     print ".PHONY: secure"
     print "secure: $(secure_object_list)"
+    print ""
+
+    print "# ----------------------------------"
+    print "# delete targets if any error occurs"
+    print "# ----------------------------------"
+    print ".PHONY: .DELETE_ON_ERROR"
+    print ".DELETE_ON_ERROR:"
+    print ""
+
+    print "# --------------------------------------------------------"
+    print "# use same shell process for all statements in each recipe"
+    print "# --------------------------------------------------------"
+    print ".PHONY: .ONESHELL"
+    print ".ONESHELL:"
     print ""
 
     print "# --------------------------------------------"
