@@ -231,7 +231,7 @@ END {
     print "# --------------"
     BUILD = buildtacl_array["bt101"]
     print "tacl_cmd = \\"
-    print "  gtacl -c 'LOAD $" BUILD " ~; :define_all ~; $(1) ~; :stop_cc'"
+    print "  gtacl -c 'LOAD $" BUILD " ~; :define_all ~; $(1) ~; stop_cc'"
     print ""
 
 
