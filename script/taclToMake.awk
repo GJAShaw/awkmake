@@ -223,7 +223,8 @@ END {
     print "# tacl_cmd macro"
     print "# --------------"
     BUILD = buildtacl_array["bt101"]
-    print "tacl_cmd = gtacl -c 'LOAD \$" BUILD " ~; :define_all ~; $(1) ~; :stop_cc'"
+    print "tacl_cmd = \\"
+    print "  gtacl -c 'LOAD $" BUILD " ~; :define_all ~; $(1) ~; :stop_cc'"
     print ""
 
 
