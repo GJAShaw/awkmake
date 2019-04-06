@@ -219,6 +219,14 @@ END {
     print "endef"
     print ""
     
+    print "# --------------"
+    print "# tacl_cmd macro"
+    print "# --------------"
+    BUILD = buildtacl_array["bt101"]
+    print "tacl_cmd = gtacl -c 'LOAD \$" BUILD " ~; :define_all ~; $(1) ~; :stop_cc'"
+    print ""
+
+
     print "# ------------------------------------------------------------------"
     print "# rules"
     print "# ------------------------------------------------------------------"
@@ -306,7 +314,7 @@ END {
             delete targets_array[row][label]
         }
         print "\t@echo Building \\$" file ", logging to \\$" logto
-        print "\t@gtacl -c '" name "_recipe'"
+        print "\t@$(call tacl_cmd, "name "_recipe)"
         print ""
     }
 
