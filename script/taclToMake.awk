@@ -217,12 +217,9 @@ END {
     print "# 'canned recipe' for EDIT-format source"
     print "# --------------------------------------"
     print "define ctoedit_recipe ="
-    print "$(RM) $@"
     print "FILE_180=$$(gname -s $<)"
     print "FILE_101=$$(gname -s $@)"
-    print "gtacl -c \"CTOEDIT \\$${FILE_180}, \\$${FILE_101}\""
-    print "ls $@"
-    print "exit ($$?)"
+    print "gtacl -c \"CTOEDIT \\$${FILE_180}, \\$${FILE_101} ~; stop_cc\""
     print "endef"
     print ""
     
