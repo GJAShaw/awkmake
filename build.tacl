@@ -20,7 +20,7 @@ define_dependencies
 define_defines
 define_assigns
 define_params
-
+[#IF NOT [all_ok] |THEN| stop_cc]
 
 ?SECTION define_flags MACRO
 == ------------------------------------------------------------------
