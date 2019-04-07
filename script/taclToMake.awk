@@ -219,7 +219,7 @@ END {
     print "define ctoedit_recipe ="
     print "FILE_180=$$(gname -s $<)"
     print "FILE_101=$$(gname -s $@)"
-    print "gtacl -c \"CTOEDIT \\$${FILE_180}, \\$${FILE_101} ~; stop_cc\""
+    print "gtacl -c \"CTOEDIT $${FILE_180}, $${FILE_101} ~; stop_cc\""
     print "endef"
     print ""
     
