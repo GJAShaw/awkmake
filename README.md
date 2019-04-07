@@ -1,4 +1,4 @@
-# awkmake
+# gawkmake
 
 Using GAWK to build a GNU Makefile from a TACL script
 
