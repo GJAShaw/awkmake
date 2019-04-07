@@ -100,9 +100,9 @@ END {
     print "RM := rm -Rf"
     print ""
 
-    print "# ---------------"
-    print "# build TACL file"
-    print "# ---------------"
+    print "# -------------------------------"
+    print "# build TACL file (target copies)"
+    print "# -------------------------------"
     print "build_tacl_code180 := " oss_fname_of(buildtacl_array["bt180"])
     print "build_tacl_code101 := " oss_fname_of(buildtacl_array["bt101"])
     print ""
