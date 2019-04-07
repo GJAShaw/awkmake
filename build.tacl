@@ -22,6 +22,7 @@ define_assigns
 define_params
 [#IF NOT [all_ok] |THEN| stop_cc]
 
+
 ?SECTION define_flags MACRO
 == ------------------------------------------------------------------
 == Define flags - reserved for future use
@@ -57,6 +58,7 @@ define_params
     FNAME bt101 VALUE $STAT.GSPROJ.BUILD;    == bt101 name is mandatory
   END;
 ]
+
 
 ?SECTION define_sourcemap MACRO
 == ------------------------------------------------------------------
@@ -106,7 +108,6 @@ define_params
   END;
 ]
 
-
 [#DEF :gs100exe_hello STRUCT
   BEGIN
     CHAR deliverable VALUE "Y";
@@ -127,7 +128,7 @@ define_params
 == Edit-format source files, compilers, linkers, libraries, etc
 == ------------------------------------------------------------------
 
-== Source
+== Source (Guardian EDIT-format)
 [#DEF :gstalsrc_hello STRUCT
   BEGIN
     FNAME f VALUE $STAT.GSTALSRC.HELLO;
