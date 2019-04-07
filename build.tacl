@@ -7,8 +7,9 @@
 
 ?SECTION define_all MACRO
 == ------------------------------------------------------------------
-== Comments go here
-== AWK doesn't need to read this section.
+== Define the environmental set-up to be run before each of the build
+== recipes' individual TACL build macros.
+== GAWK doesn't need to read this section.
 == ------------------------------------------------------------------
 
 define_flags
@@ -23,8 +24,8 @@ define_params
 
 ?SECTION define_flags MACRO
 == ------------------------------------------------------------------
-== Reserved for future use
-== AWK doesn't need to read this section.
+== Define flags - reserved for future use
+== GAWK doesn't need to read this section.
 == ------------------------------------------------------------------
 
 [#DEF :flags STRUCT
@@ -37,8 +38,8 @@ define_params
 
 ?SECTION define_texts MACRO
 == ------------------------------------------------------------------
-== Comments go here
-== AWK doesn't need to read this section.
+== Define any text variables which might come in handy
+== GAWK doesn't need to read this section.
 == ------------------------------------------------------------------
 
 [#DEF :tal_directives TEXT |BODY|OPTIMIZE 0] == Let OCAX optimize
@@ -81,7 +82,11 @@ define_params
 
 ?SECTION define_targets MACRO
 == ------------------------------------------------------------------
-== Comments go here
+== Define target names, their Guardian file names, dependencies,
+== build log locations (spooler locations strongly recommended),
+== secure repository Guardian filenames (or NONE if not applicable),
+== and whether or not they are deliverable end-products or
+== intermediate targets.
 == ------------------------------------------------------------------
 
 [#DEF :gs100obj_hello STRUCT
@@ -176,8 +181,8 @@ define_params
 
 ?SECTION define_defines MACRO
 == ------------------------------------------------------------------
-== Comments go here
-== AWK doesn't need to read this section.
+== Define TACL defines
+== GAWK doesn't need to read this section.
 == ------------------------------------------------------------------
 
 DELETE DEFINE =DERROR
@@ -190,8 +195,8 @@ ADD DEFINE    =ZSYSTAL, CLASS MAP, FILE [:zsysdefs_zsystal]
 
 ?SECTION define_assigns MACRO
 == ------------------------------------------------------------------
-== Reserved for future use
-== AWK doesn't need to read this section.
+== Define TACL assigns - reserved for future use
+== GAWK doesn't need to read this section.
 == ------------------------------------------------------------------
 
 ASSIGN WHATEVS, [:gstalsrc_hello]
@@ -199,8 +204,8 @@ ASSIGN WHATEVS, [:gstalsrc_hello]
 
 ?SECTION define_params MACRO
 == ------------------------------------------------------------------
-== Reserved for future use
-== AWK doesn't need to read this section.
+== Define TACL params - reserved for future use
+== GAWK doesn't need to read this section.
 == ------------------------------------------------------------------
 
 PARAM SUMMAT [:flags:true]
@@ -208,8 +213,8 @@ PARAM SUMMAT [:flags:true]
 
 ?SECTION gs100obj_hello_recipe MACRO
 == ------------------------------------------------------------------
-== Comments go here
-== AWK doesn't need to read this section.
+== TACL macro to build target
+== GAWK doesn't need to read this section.
 == ------------------------------------------------------------------
 
 RUN [:system_tal]/IN [:gstalsrc_hello], &
@@ -219,8 +224,8 @@ RUN [:system_tal]/IN [:gstalsrc_hello], &
 
 ?SECTION gs100exe_hello_recipe MACRO
 == ------------------------------------------------------------------
-== Comments go here
-== AWK doesn't need to read this section.
+== TACL macro to build target
+== GAWK doesn't need to read this section.
 == ------------------------------------------------------------------
 
 RUN [:system_ocax]/OUT [:gs100exe_hello:logto], &
