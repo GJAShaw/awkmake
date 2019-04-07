@@ -5,7 +5,7 @@ Using GAWK to build a GNU Makefile from a TACL script
 ## build.tacl - source
 TACL script defining source, targets, dependencies and build methods for a project in the Guardian filesystem
 
-## build.tacl - target
+## build.mk - target
 GNU Makefile created from the contents of build.tacl
 
 ## createBuildmk.awk
