@@ -1,13 +1,13 @@
 == -------------------------------------------------------------------
 == file: hello
 == type: TACL library
-== project: awkmake
+== project: hellotal
 == This is a stub
 == -------------------------------------------------------------------
 ?SECTION hello_world MACRO
 
   #OUTPUT Hello, world!
-
+  == RUN [:hello_exe]
 
 == -------------------------------------------------------------------
 == EOF

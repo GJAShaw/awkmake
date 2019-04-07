@@ -1,15 +1,7 @@
 # ------------------------------------------------------------------------------
 # file: Makefile
 # type: GNU makefile
-# project: awkmake
-# ****TODO
-# 1. derive server TACL name, so it can be put in build.mk
-# 2. work out where (i.e. in which Makefile) to put these things:
-#   - server TACL & wedge startup
-#   - xfer, cp, ctoedit and load of build.tacl
-#   - execution of define_everything
-#   - $(MAKE) -f build.mk
-#   - shutdown of server TACL and wedge
+# project: gawkmake
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------

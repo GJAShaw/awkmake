@@ -2,7 +2,7 @@
 # ------------------------------------------------------------------------------
 # file: taclToMake.awk
 # type: GAWK program
-# project: awkmake
+# project: gawkmake
 #
 # This program reads TACL source and creates a GNU Makefile
 # ------------------------------------------------------------------------------
