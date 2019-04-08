@@ -35,31 +35,46 @@ RM := rm -fR
 # --------------------------------------
 # all
 # --------------------------------------
-all: $(build_mk)
+.PHONY: all
+all: application
 
 # --------------------------------------
 # .ONESHELL
 # --------------------------------------
+.PHONY: .ONESHELL
 .ONESHELL:
 
 # --------------------------------------
-# .PHONY
+# application
 # --------------------------------------
-.PHONY: .ONESHELL all clean
+.PHONY: application
+application: $(build_mk)
+	@$(MAKE) --no-print-directory -f $(build_mk)
 
 # --------------------------------------
 # build_mk
 # --------------------------------------
 $(build_mk): $(build_tacl) $(taclToMake_awk) $(library_awk)
 	@echo "Building $@"
-	@$(script_dir)/$(taclToMake_awk) < $(build_tacl) > $@ #2> /dev/null
+	@$(script_dir)/$(taclToMake_awk) < $(build_tacl) > $@
+
+# --------------------------------------
+# cleanapp
+# --------------------------------------
+.PHONY: cleanapp
+cleanapp: $(build_mk)
+	@$(MAKE) -f $(build_mk) clean
 
 # --------------------------------------
 # clean
 # --------------------------------------
+.PHONY: clean
 clean:
 	@echo "Deleting all targets and intermediate files"
-	-@$(RM) $(targets)
+	-@$(RM) $(targets) > /dev/null 2>&1
+	@if [ -f $(build_mk) ]; then \
+	  $(MAKE) --no-print-directory -f $(build_mk) clean; \
+	fi > /dev/null 2>&1
 
 # ------------------------------------------------------------------------------
 # EOF
