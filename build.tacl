@@ -50,8 +50,8 @@ define_params
 
 [#DEF :build_tacl STRUCT == colon isn't mandatory, but is good practice
   BEGIN
-    FNAME bt180 VALUE $DEV2.B666CNTL.BUILD180; == bt180 name is mandatory
-    FNAME bt101 VALUE $DEV2.B666CNTL.BUILD;    == bt101 name is mandatory
+    FNAME bt180 VALUE $DEV2.B987CNTL.BUILD180; == bt180 name is mandatory
+    FNAME bt101 VALUE $DEV2.B987CNTL.BUILD;    == bt101 name is mandatory
   END;
 ]
 
@@ -63,17 +63,17 @@ define_params
 == then to a Guardian subvolume of EDIT-format files (code 101).
 == ------------------------------------------------------------------
 
-[#DEF :b666tsrc STRUCT == colon isn't mandatory, but is good practice
+[#DEF :b987tsrc STRUCT == colon isn't mandatory, but is good practice
   BEGIN
-    SUBVOL sv180 VALUE $DEV2.B666T180; == sv180 name is mandatory
-    SUBVOL sv101 VALUE $DEV2.B666TSRC; == sv101 name is mandatory
+    SUBVOL sv180 VALUE $DEV2.B987T180; == sv180 name is mandatory
+    SUBVOL sv101 VALUE $DEV2.B987TSRC; == sv101 name is mandatory
   END;
 ]
 
-[#DEF :b666lsrc STRUCT
+[#DEF :b987lsrc STRUCT
   BEGIN
-    SUBVOL sv180 VALUE $DEV2.B666L180;
-    SUBVOL sv101 VALUE $DEV2.B666LSRC;
+    SUBVOL sv180 VALUE $DEV2.B987L180;
+    SUBVOL sv101 VALUE $DEV2.B987LSRC;
   END;
 ]
 
@@ -87,15 +87,15 @@ define_params
 == intermediate targets.
 == ------------------------------------------------------------------
 
-[#DEF :b666obj_hello STRUCT
+[#DEF :b987obj_hello STRUCT
   BEGIN
     CHAR deliverable VALUE "N";
-    FNAME file   VALUE $DEV2.B666OBJ.HELLO;
+    FNAME file   VALUE $DEV2.B987OBJ.HELLO;
     FNAME logto  VALUE $S.#HELLO.TALOUT;
     FNAME secure VALUE NONE;
     STRUCT dependencies;
       BEGIN
-        CHAR d01(0:30) VALUE "b666src_hello";
+        CHAR d01(0:30) VALUE "b987src_hello";
         CHAR d02(0:30) VALUE "system_tal";
         CHAR d03(0:30) VALUE "system_extdecs0";
         CHAR d04(0:30) VALUE "zguard_derror";
@@ -104,15 +104,15 @@ define_params
   END;
 ]
 
-[#DEF :b666exe_hello STRUCT
+[#DEF :b987exe_hello STRUCT
   BEGIN
     CHAR deliverable VALUE "Y";
-    FNAME file   VALUE $DEV2.B666EXE.HELLO;
+    FNAME file   VALUE $DEV2.B987EXE.HELLO;
     FNAME logto  VALUE $S.#HELLO.OCAXOUT;
-    FNAME secure VALUE $DEV2.B666SEC.HELLO;
+    FNAME secure VALUE $DEV2.B987SEC.HELLO;
     STRUCT dependencies;
       BEGIN
-        CHAR d01(0:30) VALUE "b666obj_hello";
+        CHAR d01(0:30) VALUE "b987obj_hello";
         CHAR d02(0:30) VALUE "system_ocax";
       END;
   END;
@@ -125,15 +125,15 @@ define_params
 == ------------------------------------------------------------------
 
 == Source (Guardian EDIT-format)
-[#DEF :b666tsrc_hello STRUCT
+[#DEF :b987tsrc_hello STRUCT
   BEGIN
-    FNAME f VALUE $DEV2.B666TSRC.HELLO;
+    FNAME f VALUE $DEV2.B987TSRC.HELLO;
   END;
 ]
 
-[#DEF :b666lsrc_hello STRUCT
+[#DEF :b987lsrc_hello STRUCT
   BEGIN
-    FNAME f VALUE $DEV2.B666LSRC.HELLO;
+    FNAME f VALUE $DEV2.B987LSRC.HELLO;
   END;
 ]
 
@@ -196,7 +196,7 @@ ADD DEFINE    =ZSYSTAL, CLASS MAP, FILE [:zsysdefs_zsystal]
 == GAWK doesn't need to read this section.
 == ------------------------------------------------------------------
 
-ASSIGN WHATEVS, [:b666tsrc_hello]
+ASSIGN WHATEVS, [:b987tsrc_hello]
 
 
 ?SECTION define_params MACRO
@@ -208,26 +208,26 @@ ASSIGN WHATEVS, [:b666tsrc_hello]
 PARAM THINGY [:true]
 
 
-?SECTION b666obj_hello_recipe MACRO
+?SECTION b987obj_hello_recipe MACRO
 == ------------------------------------------------------------------
 == TACL macro to build target
 == GAWK doesn't need to read this section.
 == ------------------------------------------------------------------
 
-RUN [:system_tal]/IN [:b666tsrc_hello], &
-  OUT [:b666obj_hello:logto], TERM $ZHOME/ &
-  [b666obj_hello:file]; [:tal_directives]
+RUN [:system_tal]/IN [:b987tsrc_hello], &
+  OUT [:b987obj_hello:logto], TERM $ZHOME/ &
+  [b987obj_hello:file]; [:tal_directives]
 
 
-?SECTION b666exe_hello_recipe MACRO
+?SECTION b987exe_hello_recipe MACRO
 == ------------------------------------------------------------------
 == TACL macro to build target
 == GAWK doesn't need to read this section.
 == ------------------------------------------------------------------
 
-RUN [:system_ocax]/OUT [:b666exe_hello:logto], &
-  TERM $ZHOME/ [:b666obj_hello:file] &
-  output_file [:b666exe_hello:file]
+RUN [:system_ocax]/OUT [:b987exe_hello:logto], &
+  TERM $ZHOME/ [:b987obj_hello:file] &
+  output_file [:b987exe_hello:file]
 
 
 == ------------------------------------------------------------------
