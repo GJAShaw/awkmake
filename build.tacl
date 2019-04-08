@@ -29,12 +29,8 @@ define_params
 == GAWK doesn't need to read this section.
 == ------------------------------------------------------------------
 
-[#DEF :flags STRUCT
-  BEGIN
-    BOOL false VALUE  0;
-    BOOL true  VALUE -1;
-  END;
-]
+[#DEF :false STRUCT BEGIN BOOL b VALUE  0; END;]
+[#DEF :true  STRUCT BEGIN BOOL b VALUE -1; END;]
 
 
 ?SECTION define_texts MACRO
