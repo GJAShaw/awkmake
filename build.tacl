@@ -220,7 +220,7 @@ PARAM SUMMAT [:flags:true]
 
 RUN [:system_tal]/IN [:gstalsrc_hello], &
   OUT [:gs100obj_hello:logto], TERM $ZHOME/ &
-  [gs100obj_hello:name]; [:tal_directives]
+  [gs100obj_hello:file]; [:tal_directives]
 
 
 ?SECTION gs100exe_hello_recipe MACRO
@@ -230,8 +230,8 @@ RUN [:system_tal]/IN [:gstalsrc_hello], &
 == ------------------------------------------------------------------
 
 RUN [:system_ocax]/OUT [:gs100exe_hello:logto], &
-  TERM $ZHOME/ [:gs100obj_hello:name] &
-  output_file [:gs100exe_hello:name]
+  TERM $ZHOME/ [:gs100obj_hello:file] &
+  output_file [:gs100exe_hello:file]
 
 
 == ------------------------------------------------------------------
