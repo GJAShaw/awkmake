@@ -63,10 +63,17 @@ define_params
 == then to a Guardian subvolume of EDIT-format files (code 101).
 == ------------------------------------------------------------------
 
-[#DEF :b987tsrc STRUCT == colon isn't mandatory, but is good practice
+[#DEF :b987ddl  STRUCT == colon isn't mandatory, but is good practice
   BEGIN
-    SUBVOL sv180 VALUE $DEV2.B987T180; == sv180 name is mandatory
-    SUBVOL sv101 VALUE $DEV2.B987TSRC; == sv101 name is mandatory
+    SUBVOL sv180 VALUE $DEV2.B987D180; == sv180 name is mandatory
+    SUBVOL sv101 VALUE $DEV2.B987DDL;  == sv101 name is mandatory
+  END;
+]
+
+[#DEF :b987tsrc STRUCT
+  BEGIN
+    SUBVOL sv180 VALUE $DEV2.B987T180;
+    SUBVOL sv101 VALUE $DEV2.B987TSRC;
   END;
 ]
 
@@ -125,6 +132,12 @@ define_params
 == ------------------------------------------------------------------
 
 == Source (Guardian EDIT-format)
+[#DEF :b987ddl_hello STRUCT
+  BEGIN
+    FNAME f VALUE $DEV2.B987DDL.HELLO;
+  END;
+]
+
 [#DEF :b987tsrc_hello STRUCT
   BEGIN
     FNAME f VALUE $DEV2.B987TSRC.HELLO;
@@ -142,6 +155,12 @@ define_params
 [#DEF :system_ctoedit STRUCT
   BEGIN
     FNAME f VALUE $SYSTEM.SYSTEM.CTOEDIT;
+  END;
+]
+
+[#DEF :system_ddl STRUCT
+  BEGIN
+    FNAME f VALUE $SYSTEM.SYSTEM.DDL;
   END;
 ]
 
@@ -207,6 +226,24 @@ ASSIGN WHATEVS, [:b987tsrc_hello]
 
 PARAM THINGY [:true]
 
+?SECTION b987ddl_dict_recipe MACRO
+== ------------------------------------------------------------------
+== TACL macro to build target
+== GAWK doesn't need to read this section.
+== ------------------------------------------------------------------
+
+#FRAME
+
+  #PUSH   :ddlin
+  #APPEND :ddlin ?DICT   [****TODO write this bit] !
+  #APPEND :ddlin ?TACL   []
+  #APPEND :ddlin ?TAL    []
+  #APPEND :ddlin ?SOURCE []
+
+  RUN [:system_ddl]/INV :ddlin, &
+    OUT [:b987ddl_dict:logto], TERM $ZHOME/
+
+#UNFRAME
 
 ?SECTION b987obj_hello_recipe MACRO
 == ------------------------------------------------------------------
