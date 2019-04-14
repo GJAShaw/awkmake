@@ -52,8 +52,10 @@ application: $(build_mk)
 	@$(MAKE) --no-print-directory -f $(build_mk)
 
 # --------------------------------------
-# build_mk
+# buildmk
 # --------------------------------------
+.PHONY: buildmk
+buildmk: $(build_mk)
 $(build_mk): $(build_tacl) $(taclToMake_awk) $(library_awk)
 	@echo "Building $@"
 	@$(script_dir)/$(taclToMake_awk) < $(build_tacl) > $@
