@@ -306,8 +306,9 @@ PARAM THINGY [:true]
   VCHANGE/QUIET/ :volsvol " " "."
   
   #PUSH   :ddlin
-  #APPEND :ddlin ?DICTR [:volsvol] !
-  #APPEND :ddlin ?TAL [:b987ddl_hellotal]
+  #APPEND :ddlin ?DICTR [:volsvol]
+  #APPEND :ddlin ?TAL [:b987ddl_hellotal] !
+  #APPEND :ddlin OUTPUT *.
 
   RUN [:system_ddl]/INV :ddlin, &
     OUT [:b987ddl_hellotal:logto], TERM $ZHOME/
