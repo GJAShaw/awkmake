@@ -98,6 +98,11 @@ define_params
 == files need their own special FUP PURGE method in the 'clean'
 == target, because the OSS shell 'rm' command cannot delete Enscribe
 == structured files.
+== Currently this method does not support storage of a DDL dictionary
+== to a secure repository. It's not really necessary anyway - we can
+== build a dictionary any time we like, from source. It would need
+== some care in the duplication of the DICT??? files, to preserve the
+== consistency of the alternate key file assigns.
 == ------------------------------------------------------------------
 
 [#DEF :b987ddl_dictodf STRUCT
@@ -105,7 +110,6 @@ define_params
     CHAR deliverable VALUE "N";
     FNAME file   VALUE $DEV2.B987DDL.DICTODF;
     FNAME logto  VALUE $S.#HELLO.DDLCOMP;
-    FNAME secure VALUE NONE;
     STRUCT dependencies;
       BEGIN
         CHAR d01(0:30) VALUE "b987ddl_hello";
@@ -147,10 +151,11 @@ define_params
     STRUCT dependencies;
       BEGIN
         CHAR d01(0:30) VALUE "b987src_hello";
-        CHAR d02(0:30) VALUE "system_tal";
-        CHAR d03(0:30) VALUE "system_extdecs0";
-        CHAR d04(0:30) VALUE "zguard_derror";
-        CHAR d05(0:30) VALUE "zsysdefs_zsystal";
+        CHAR d02(0:30) VALUE "b987ddl_hellotal";
+        CHAR d03(0:30) VALUE "system_tal";
+        CHAR d04(0:30) VALUE "system_extdecs0";
+        CHAR d05(0:30) VALUE "zguard_derror";
+        CHAR d06(0:30) VALUE "zsysdefs_zsystal";
       END;
   END;
 ]
