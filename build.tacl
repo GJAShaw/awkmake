@@ -15,6 +15,7 @@
 define_flags
 define_texts
 define_sourcemap
+define_ddldict
 define_targets
 define_dependencies
 define_defines
@@ -85,6 +86,35 @@ define_params
 ]
 
 
+?SECTION define_ddldict MACRO
+== ------------------------------------------------------------------
+== Define the DDL dictionary, if any.
+== DDL presents unusual features to a build automator; a dictionary
+== comprises 14 files which all must be purged in the 'clean' target,
+== but only one file, DICTODF, need be considered when defining
+== build dependencies, because it's the only file which is always
+== updated when any object in the dictionary is added, deleted or
+== modified. Further interest arises from the fact that the DICT???
+== files need their own special FUP PURGE method in the 'clean'
+== target, because the OSS shell 'rm' command cannot delete Enscribe
+== structured files.
+== ------------------------------------------------------------------
+
+[#DEF :b987ddl_dictodf STRUCT
+  BEGIN
+    CHAR deliverable VALUE "N";
+    FNAME file   VALUE $DEV2.B987DDL.DICTODF;
+    FNAME logto  VALUE $S.#HELLO.DDLCOMP;
+    FNAME secure VALUE NONE;
+    STRUCT dependencies;
+      BEGIN
+        CHAR d01(0:30) VALUE "b987ddl_hello";
+        CHAR d02(0:30) VALUE "system_ddl";
+      END;
+  END;
+]
+
+
 ?SECTION define_targets MACRO
 == ------------------------------------------------------------------
 == Define target names, their Guardian file names, dependencies,
@@ -93,6 +123,20 @@ define_params
 == and whether or not they are deliverable end-products or
 == intermediate targets.
 == ------------------------------------------------------------------
+
+[#DEF :b987ddl_hellotal STRUCT
+  BEGIN
+    CHAR deliverable VALUE "N";
+    FNAME file   VALUE $DEV2.B987DDL.HELLOTAL;
+    FNAME logto  VALUE $S.#HELLO.DDLOUT;
+    FNAME secure VALUE NONE;
+    STRUCT dependencies;
+      BEGIN
+        CHAR d01(0:30) VALUE "b987ddl_dictodf";
+        CHAR d02(0:30) VALUE "system_ddl";
+      END;
+  END;
+]
 
 [#DEF :b987obj_hello STRUCT
   BEGIN
@@ -205,6 +249,8 @@ DELETE DEFINE =DERROR
 ADD DEFINE    =DERROR, CLASS MAP, FILE [:zguard_derror]
 DELETE DEFINE =EXTDECS0
 ADD DEFINE    =EXTDECS0, CLASS MAP, FILE [:system_extdecs0]
+DELETE DEFINE =HELLOTAL
+ADD DEFINE    =HELLOTAL, CLASS MAP, FILE [:b987ddl_hellotal:file]
 DELETE DEFINE =ZSYSTAL
 ADD DEFINE    =ZSYSTAL, CLASS MAP, FILE [:zsysdefs_zsystal]
 
@@ -226,7 +272,7 @@ ASSIGN WHATEVS, [:b987tsrc_hello]
 
 PARAM THINGY [:true]
 
-?SECTION b987ddl_dict_recipe MACRO
+?SECTION b987ddl_dictodf_recipe MACRO
 == ------------------------------------------------------------------
 == TACL macro to build target
 == GAWK doesn't need to read this section.
@@ -234,14 +280,37 @@ PARAM THINGY [:true]
 
 #FRAME
 
+  #PUSH :volsvol
+  #SET  :volsvol [#FILEINFO/VOLUME, SUBVOL/ [:b987ddl_dictodf:file]]
+  VCHANGE/QUIET/ :volsvol " " "."
+  
   #PUSH   :ddlin
-  #APPEND :ddlin ?DICT   [****TODO write this bit] !
-  #APPEND :ddlin ?TACL   []
-  #APPEND :ddlin ?TAL    []
-  #APPEND :ddlin ?SOURCE []
+  #APPEND :ddlin ?DICT [:volsvol] !
+  #APPEND :ddlin ?SOURCE [:b987ddl_hello]
 
   RUN [:system_ddl]/INV :ddlin, &
-    OUT [:b987ddl_dict:logto], TERM $ZHOME/
+    OUT [:b987ddl_dictodf:logto], TERM $ZHOME/
+
+#UNFRAME
+
+?SECTION b987ddl_hellotal_recipe MACRO
+== ------------------------------------------------------------------
+== TACL macro to build target
+== GAWK doesn't need to read this section.
+== ------------------------------------------------------------------
+
+#FRAME
+
+  #PUSH :volsvol
+  #SET  :volsvol [#FILEINFO/VOLUME, SUBVOL/ [:b987ddl_dictodf:file]]
+  VCHANGE/QUIET/ :volsvol " " "."
+  
+  #PUSH   :ddlin
+  #APPEND :ddlin ?DICTR [:volsvol] !
+  #APPEND :ddlin ?TAL [:b987ddl_hellotal]
+
+  RUN [:system_ddl]/INV :ddlin, &
+    OUT [:b987ddl_hellotal:logto], TERM $ZHOME/
 
 #UNFRAME
 
