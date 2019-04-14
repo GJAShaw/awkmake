@@ -323,9 +323,48 @@ END {
         print ""
     }
     
-    print "# -------------------------------------"
+    print "# --------------"
+    print "# DDL dictionary"
+    print "# --------------"
+    if (length(ddldict_array) > 0) {
+        name = ddldict_array["name"]
+        delete ddldict_array["name"]
+        file = ddldict_array["file"]
+        delete ddldict_array["file"]
+        logto = ddldict_array["logto"]
+        delete ddldict_array["logto"]
+        # Everything except dependencies has now been deleted from the array
+        print ".PHONY: ddldict"
+        print "ddldict: $(" name ")" 
+        print "$(" name "): $(build_tacl_code101) \\"
+        dependencies_per_line = 4
+        i = 1
+        for (label in ddldict_array) {
+            printf("%s%s%s", "$(", ddldict_array[label], ") ")
+            if (length(ddldict_array) == 1) { # last element
+                print ""
+            } else {
+                if (i == (dependencies_per_line)) {
+                    print "\\"
+                    i = 1
+                } else {
+                    i++
+                }
+            }
+            delete ddldict_array[label]
+        }
+        print "\t@echo Building DDL dictionary; DICTODF = \\$" file ","
+        print "\t@echo logging to \\$" logto
+        print "\t@$(call tacl_cmd, "name "_recipe)"
+        print ""
+    } else {
+        print "# (none)"
+        print ""
+    }
+
+    print "# -----------------------"
     print "# individual target rules"
-    print "# -------------------------------------"
+    print "# -----------------------"
     for (row in targets_array) {
         name = targets_array[row]["name"]
         delete targets_array[row]["name"]
