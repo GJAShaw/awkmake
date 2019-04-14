@@ -239,7 +239,7 @@ END {
     print "define cleanddl_recipe ="
     if (length(ddldict_array) > 0) {    
         name = ddldict_array["name"]
-        print "touch $(" name ") # in case it doesn't exist"
+        print "touch $(" name ") # for gname, in case file doesn't exist"
         print "DICTODF=$$(gname -s $(" name "))"
         print "gtacl -c \"purge_ddldict $${DICTODF} ~; stop_cc\""
     } else {
@@ -253,7 +253,7 @@ END {
     print "# --------------------------------------"
     print "define ctoedit_recipe ="
     print "FILE_180=$$(gname -s $<)"
-    print "touch $@"
+    print "touch $@ # for gname, in case file doesn't exist"
     print "FILE_101=$$(gname -s $@)"
     print "$(RM) $@"
     print "gtacl -c \"CTOEDIT $${FILE_180}, $${FILE_101} ~; stop_cc\""
