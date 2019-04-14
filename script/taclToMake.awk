@@ -233,6 +233,21 @@ END {
     }
     print ""
     
+    print "# ----------------------------------------------"
+    print "# 'canned recipe' for deletion of DDL dictionary"
+    print "# ----------------------------------------------"
+    print "define cleanddl_recipe ="
+    if (length(ddldict_array) > 0) {    
+        name = ddldict_array["name"]
+        print "touch $(" name ") # in case it doesn't exist"
+        print "DICTODF=$$(gname -s $(" name "))"
+        print "gtacl -c \"purge_ddldict $${DICTODF} ~; stop_cc\""
+    } else {
+        print ": # no DDL dictionary to delete"
+    }
+    print "endef"
+    print ""
+    
     print "# --------------------------------------"
     print "# 'canned recipe' for EDIT-format source"
     print "# --------------------------------------"
@@ -414,6 +429,7 @@ END {
     print ".PHONY: clean"
     print "clean:"
     print "\t-@$(RM) $(clean_list)"
+    print "\t-@$(cleanddl_recipe)"
     print ""
 
 
