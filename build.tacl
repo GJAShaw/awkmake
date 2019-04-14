@@ -102,12 +102,13 @@ define_params
 == to a secure repository. It's not really necessary anyway - we can
 == build a dictionary any time we like, from source. It would need
 == some care in the duplication of the DICT??? files, to preserve the
-== consistency of the alternate key file assigns.
+== consistency of the alternate key file assigns. The same holds for
+== "deliverable" - this method doesn't support delivery of a DDL
+== dictionary (yet).
 == ------------------------------------------------------------------
 
 [#DEF :b987ddl_dictodf STRUCT
   BEGIN
-    CHAR deliverable VALUE "N";
     FNAME file   VALUE $DEV2.B987DDL.DICTODF;
     FNAME logto  VALUE $S.#HELLO.DDLCOMP;
     STRUCT dependencies;

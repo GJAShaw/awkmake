@@ -14,6 +14,7 @@ BEGIN {
     IGNORECASE = 1 # gawk feature
     delete buildtacl_array
     delete clean_array
+    delete ddldict_array
     delete deliverables_array
     delete dependencies_array
     delete secure_array
@@ -52,16 +53,20 @@ BEGIN {
         build_buildtacl_array()
         break
         
+    case "define_ddldict":
+        build_ddldict_array()
+        break
+
+    case "define_dependencies":
+        build_dependencies_array()
+        break
+
     case "define_sourcemap":
         build_sourcemap_array()
         break
         
     case "define_targets":
         build_targets_arrays()
-        break
-
-    case "define_dependencies":
-        build_dependencies_array()
         break
 
     default:
@@ -120,6 +125,21 @@ END {
     }
     print ""
     
+    print "# -------------------------------------------------"
+    print "# DDL dictionary - DICTODF tracks all modifications"
+    print "# -------------------------------------------------"
+    if (length(ddldict_array) > 0) {
+        
+        printf("%s%s%s", ddldict_array["name"], " := ",\
+            oss_fname_of(ddldict_array["file"])\
+        )
+        print ""
+        
+    } else {
+        print "# (none)"
+    }
+    print ""
+
     print "# --------------------------------------"
     print "# targets - intermediate and deliverable"
     print "# --------------------------------------"
