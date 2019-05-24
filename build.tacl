@@ -50,8 +50,8 @@ define_params
 
 [#DEF :build_tacl STRUCT == colon isn't mandatory, but is good practice
   BEGIN
-    FNAME bt180 VALUE ${appdisk}.${apptag}CNTL.BUILD180; == bt180 name is mandatory
-    FNAME bt101 VALUE ${appdisk}.${apptag}CNTL.BUILD;    == bt101 name is mandatory
+    FNAME bt180 VALUE $${appdisk}.${apptag}CNTL.BUILD180; == bt180 name is mandatory
+    FNAME bt101 VALUE $${appdisk}.${apptag}CNTL.BUILD;    == bt101 name is mandatory
   END;
 ]
 
@@ -65,15 +65,15 @@ define_params
 
 [#DEF :apptsrc STRUCT == colon isn't mandatory, but is good practice
   BEGIN
-    SUBVOL sv180 VALUE ${appdisk}.${apptag}T180; == sv180 name is mandatory
-    SUBVOL sv101 VALUE ${appdisk}.${apptag}TSRC; == sv101 name is mandatory
+    SUBVOL sv180 VALUE $${appdisk}.${apptag}T180; == sv180 name is mandatory
+    SUBVOL sv101 VALUE $${appdisk}.${apptag}TSRC; == sv101 name is mandatory
   END;
 ]
 
 [#DEF :applsrc STRUCT
   BEGIN
-    SUBVOL sv180 VALUE ${appdisk}.${apptag}L180;
-    SUBVOL sv101 VALUE ${appdisk}.${apptag}LSRC;
+    SUBVOL sv180 VALUE $${appdisk}.${apptag}L180;
+    SUBVOL sv101 VALUE $${appdisk}.${apptag}LSRC;
   END;
 ]
 
@@ -89,7 +89,7 @@ define_params
 [#DEF :appobj_hello STRUCT
   BEGIN
     CHAR deliverable VALUE "N";
-    FNAME file   VALUE ${appdisk}.${apptag}OBJ.HELLO;
+    FNAME file   VALUE $${appdisk}.${apptag}OBJ.HELLO;
     FNAME logto  VALUE $S.#HELLO.TALOUT;
     STRUCT dependencies;
       BEGIN
@@ -105,7 +105,7 @@ define_params
 [#DEF :appexe_hello STRUCT
   BEGIN
     CHAR deliverable VALUE "Y";
-    FNAME file   VALUE ${appdisk}.${apptag}EXE.HELLO;
+    FNAME file   VALUE $${appdisk}.${apptag}EXE.HELLO;
     FNAME logto  VALUE $S.#HELLO.OCAXOUT;
     STRUCT dependencies;
       BEGIN
@@ -124,13 +124,13 @@ define_params
 == Source (Guardian EDIT-format)
 [#DEF :apptsrc_hello STRUCT
   BEGIN
-    FNAME f VALUE ${appdisk}.${apptag}TSRC.HELLO;
+    FNAME f VALUE $${appdisk}.${apptag}TSRC.HELLO;
   END;
 ]
 
 [#DEF :applsrc_hello STRUCT
   BEGIN
-    FNAME f VALUE ${appdisk}.${apptag}LSRC.HELLO;
+    FNAME f VALUE $${appdisk}.${apptag}LSRC.HELLO;
   END;
 ]
 
