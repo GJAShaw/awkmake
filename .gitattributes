@@ -5,7 +5,7 @@
 # ------------------------------------------------------------------------------
 
 # -- Guardian EDIT files - TACL, TAL source etc
-*.tacl filter=guardianfilter
+*.tacl filter=appfilter
 
 # -- Microsoft Word docs
 *.docx diff=docx
