@@ -16,7 +16,6 @@ BEGIN {
     delete clean_array
     delete deliverables_array
     delete dependencies_array
-    delete secure_array
     delete sourcemap_array
     delete targets_array
     delete temp_array
@@ -154,24 +153,6 @@ END {
     } 
     print ""
 
-    print "# ------------------------"
-    print "# secure object repository"
-    print "# ------------------------"
-    for (name in secure_array) {
-        print name "_securecopy := " oss_fname_of(secure_array[name])
-    }
-    print ""
-    print "secure_object_list :="
-    print "secure_object_list += \\"
-    for (name in secure_array) {
-        printf("%s%s%s%s", "  ", "$(", name, "_securecopy)")
-        if (length(secure_array) > 1) {
-            printf("%s", " \\")
-        }
-        print ""
-    } 
-    print ""
-
     print "# ----------------------------"
     print "# source subvolumes - C-format"
     print "# ----------------------------"
@@ -244,13 +225,6 @@ END {
     print "# -------------------"
     print ".PHONY: all"
     print "all: $(deliverables_list)"
-    print ""
-
-    print "# -------------------------------"
-    print "# update secure object repository"
-    print "# -------------------------------"
-    print ".PHONY: secure"
-    print "secure: $(secure_object_list)"
     print ""
 
     print "# ----------------------------------"
@@ -336,16 +310,6 @@ END {
         }
         print "\t@echo Building \\$" file ", logging to \\$" logto
         print "\t@$(call tacl_cmd, "name "_recipe)"
-        print ""
-    }
-
-    print "# -------------------------------------"
-    print "# secure object repository update rules"
-    print "# -------------------------------------"
-    for (name in secure_array) {
-        print "$(" name "_securecopy):  $(" name ")"
-        print "\t@echo Updating secure object \\$" secure_array[name]
-        print "\t@cp --Wclobber $< $@"
         print ""
     }
 
