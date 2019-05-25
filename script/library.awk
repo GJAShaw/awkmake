@@ -110,26 +110,10 @@ function build_targets_arrays(    name, secure, dlabel, dname) {
     }
 
     # Look for a "FNAME xxxx VALUE $VOL.SVOL.FILE;" line...
-    # xxxx could be file, logto or secure
+    # xxxx could be file or logto
     if (match($0, /FNAME[[:space:]]+[[:alpha:]]+[[:space:]]+VALUE/) > 0) {
     
-        switch ($2) {
-        
-            case "file":
-            case "logto":
-                temp_array[$2] = gensub(/;/, "", "g", $4)
-                break
-            
-            case "secure":
-                secure = gensub(/;/, "", "g", $4)
-                if (match(secure, /^NONE$/) == 0) {
-                    secure_array[temp_array["name"]] = secure
-                }
-                break
-                
-            # no default case
-        }
-        
+        temp_array[$2] = gensub(/;/, "", "g", $4)
         
     }
    
